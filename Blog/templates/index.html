@@ -1,4 +1,6 @@
 <!-- templates/index.html -->
+
+<!--
 <!DOCTYPE html>
 <html lang="tr">
 
@@ -35,3 +37,22 @@
 </body>
 
 </html>
+
+-->
+
+
+<!--Miras alarak oluşturulmuş bir şablon>-->
+
+{% extends "layout.html" %}
+
+{% block title %}
+
+    <h1 style="text-align: center;">Erkan'ın Ana Sayfası</h1>
+    <hr>
+{% endblock title %}
+
+{% block erkan %} <!-- miras aldığımız block'u değiştiriyoruz " override" -->
+    <p style="text-align: center;">Hoşgeldin Erkan! burada miras aldığın layout.html dosyası var ama burdaki inde.html dosaysında kendin veridğin içeriği görüyorsun"- block ile -"</p>
+    <hr>
+
+{% endblock %}
