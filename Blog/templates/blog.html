@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Page</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        nav {
+            background-color: #333;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+
+        .post-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .post {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .post:hover {
+            transform: translateY(-5px);
+        }
+
+        .post img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .post-content {
+            padding: 1rem;
+        }
+
+        .post-content h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+
+        .post-content p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .countBlog {
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+            color: #333;
+            margin: 2rem 0;
+            padding: 1rem;
+            display: flex;
+            justify-content: center;            /* ortala */
+            align-items: center;            /* dikey ortala */
+
+            gap: 10px;
+            /* aralarına boşluk */
+        }
+
+        .countBlog h3,
+        .countBlog p {
+            margin: 0;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('blog') }}">Blog</a>
+        <a href="{{ url_for('about') }}">About</a>
+    </nav>
+
+    <div class="countBlog">
+        <h3>Blog Count:</h3>
+        <p>{{number}}</p>
+    </div>
+    <div class="container">
+        <h1>Our Blog</h1>
+
+
+
+        <div class="post-grid">
+            <!-- Loop through blog posts and display them -->
+            {% for i in range(1,16) %}
+            <div class="post">
+                <img src="https://picsum.photos/id/{{ i }}/300/300" alt="Post Image">
+                <div class="post-content">
+                    <h3>Blog Post {{ i }}</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum.
+                    </p>
+                </div>
+            </div>
+
+            {% endfor %}
+        </div>
+
+
+    </div>
+
+</body>
+
+</html>
+<!--  -->
