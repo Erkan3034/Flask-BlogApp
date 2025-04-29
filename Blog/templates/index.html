@@ -1,1 +1,41 @@
-{% extends "layout.html" %}
+{% extends 'layout.html' %}
+
+{% block main %}
+<div class="rounded-3 p-4 shadow-sm bg-white">
+  <h1>Welcome to the Blog</h1>
+  <p>This is the main page of the blog application.</p>
+  <p>Here you can find the latest posts and updates.</p>
+  <p>Feel free to explore and enjoy your stay!</p>
+</div>
+{% endblock main %}
+
+<!-- Aside Content Start-->
+
+
+{% block aside %}
+<div class="p-3 bg-white rounded mb-3 shadow-sm">
+  <h5>Staff Picks</h5>
+  <ul class="list-unstyled">
+    <li><strong>I worked for Pope Francis</strong> <br /><small>Apr 22</small></li>
+    <li><strong>My Notes App</strong> <br /><small>Apr 17</small></li>
+    <li><strong>Our Souls Need Proof of Work</strong> <br /><small>Mar 10</small></li>
+  </ul>
+</div>
+{% endblock aside %}
+
+
+
+
+{% block asideTopics %}
+  <div class="p-3 bg-white rounded shadow-sm">
+  <h5>Recommended topics</h5>
+  <span class="badge bg-primary">Programming</span>
+  <span class="badge bg-primary">Self Improvement</span>
+  <span class="badge bg-primary">Data Science</span>
+</div>
+{% endblock %}
+
+
+
+
+<!-- Aside Content End-->
