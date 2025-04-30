@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% block register %}
+
+{% from "includes/form_helpers.html" import render_field %}
+<div class="rounded-3 p-4 shadow-sm bg-white">
+  <h1 class="text-center  fw-semibold">Kayıt Ol!</h1>
+  <hr>
+  <form action="" method="post">
+    {{ render_field(form.name ,class="form-control") }}
+    {{ render_field(form.username,class="form-control") }}
+    {{ render_field(form.email,class="form-control") }}
+    {{ render_field(form.password,class="form-control") }}
+    {{ render_field(form.confirm,class="form-control") }}
+    <button type="submit" class="btn btn-primary ">Kayıt Ol</button>
+  </form>
+</div>
+{% endblock register %}

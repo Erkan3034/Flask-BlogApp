@@ -1,16 +1,60 @@
 {% extends 'layout.html' %}
 
+<!-- Main Content Start-->
 {% block main %}
+
 <div class="rounded-3 p-4 shadow-sm bg-white">
-  <h1>Welcome to the Blog</h1>
-  <p>This is the main page of the blog application.</p>
-  <p>Here you can find the latest posts and updates.</p>
-  <p>Feel free to explore and enjoy your stay!</p>
+  <h1 class="text-center  fw-semibold">👋 Hoş Geldin!</h1>
+  <hr>
+  <p>Coder Erkan Blog'a Merhaba De! </p>
+  <p class="lead">
+    Yazılıma ilgi duyan herkesin kendine bir şeyler katabileceği, öğrenip uygulayabileceği ve ilham alabileceği bir
+    dünyaya hoş geldin.
+    <br>
+    Burada yazılım, yapay zeka, kişisel gelişim ve teknolojiyle ilgili özgün içerikler bulacaksın.
+    <br>
+    🧠 Yeni bilgiler öğren,<br>
+    💬 Düşüncelerini paylaş,<br>
+    🚀 Gelişimine katkı sağla! <br>
+
+    Sen de bu yolculuğun bir parçası olmak istiyorsan, içerikleri keşfetmeye başla!
+    Unutma, her büyük yazılımcı küçük bir "Hello World!" ile başladı. :)
+  </p>
 </div>
+
+<!-- Koşul kullanımı
+{% if answer == 1 %}
+<p>Cevap 1</p>
+{% elif answer == 2 %}
+<p>Cevap 2</p>
+
+{% else %}
+<p>Cevap yok...</p>
+{% endif %}
+-->
+
+<!-- Döngü Kullanımı start-->
+
+<!--
+<ul>
+  {% for article in articles  %}
+  
+  <li>Article Id : {{article.Id}}  /  Title : {{article.title}}  /  Content : {{article.content}}</li>
+  {% endfor %}
+</ul>
+-->
+
+<p>{{article_id}}</p>
+<!-- Döngü Kullanımı end-->
+
+
 {% endblock main %}
+<!-- Main Content End-->
+
+
+
 
 <!-- Aside Content Start-->
-
 
 {% block aside %}
 <div class="p-3 bg-white rounded mb-3 shadow-sm">
@@ -27,15 +71,12 @@
 
 
 {% block asideTopics %}
-  <div class="p-3 bg-white rounded shadow-sm">
+<div class="p-3 bg-white rounded shadow-sm">
   <h5>Recommended topics</h5>
   <span class="badge bg-primary">Programming</span>
   <span class="badge bg-primary">Self Improvement</span>
   <span class="badge bg-primary">Data Science</span>
 </div>
 {% endblock %}
-
-
-
 
 <!-- Aside Content End-->

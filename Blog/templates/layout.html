@@ -19,68 +19,44 @@
     {% block extra_css %}{% endblock %}
 </head>
 
-<body style="background-color: #F0F2F5; color: #212529;">
+<body style="background-color: #F0F2F5; color: #212529;" class="d-flex flex-column min-vh-100">
 
     <!-- Navigation -->
     {% include 'includes/navbar.html' %}
 
-    <!-- Navigation end -->
-
-
-
-
     <!-- Main Content Area -->
     <div class="container mt-4">
-        <div class="row">
 
+        <!-- Register Area -->
+        {% block register %}
+        {% endblock %}
+
+        <div class="row">
             <!-- Main Content -->
             <main class="col-lg-8 col-md-7 col-sm-12 mb-4">
-                    {% block main %}
-                    <!-- Content from child templates will be inserted here -->
-                    {% endblock %}
+                {% block main %}
+                {% endblock %}
             </main>
-
-
-
 
             <!-- Aside Content -->
             <aside class="col-lg-4 col-md-5 col-sm-12 mb-4">
+                {% block aside %}
+                {% endblock %}
 
-                    {% block aside%}
-                    <!-- Content from child templates will be inserted here -->
-                    {% endblock %}
-
-                    {% block asideTopics%}
-                    <!-- Content from child templates will be inserted here -->
-                    {% endblock %}
-
+                {% block asideTopics %}
+                {% endblock %}
             </aside>
-
         </div>
     </div>
-    <!-- Main Content Area end -->
 
-    <!-- About Content Area Start -->
-
+    <!-- About Content Area -->
     <div class="container mt-4">
         {% block about %}
-        <!-- Content from child templates will be inserted here -->
-        {% endblock  about %}
+        {% endblock %}
     </div>
-    <!-- About Content Area Start -->
-
-
-
-
-
-
-
-
-
-
 
     <!-- Footer -->
-    <footer class="footer mt-5 py-3 bg-light">
+    <footer class="footer mt-auto py-3 bg-light">
         <div class="container text-center">
             <span class="text-muted">© 2025 Coder Erkan Blog. All rights reserved.</span>
         </div>
