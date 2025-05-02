@@ -3,16 +3,40 @@
 {% block register %}
 
 {% from "includes/form_helpers.html" import render_field %}
-<div class="rounded-3 p-4 shadow-sm bg-white">
-  <h1 class="text-center  fw-semibold">Kayıt Ol!</h1>
-  <hr>
-  <form action="" method="post">
-    {{ render_field(form.name ,class="form-control") }}
-    {{ render_field(form.username,class="form-control") }}
-    {{ render_field(form.email,class="form-control") }}
-    {{ render_field(form.password,class="form-control") }}
-    {{ render_field(form.confirm,class="form-control") }}
-    <button type="submit" class="btn btn-primary ">Kayıt Ol</button>
-  </form>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6 col-xl-5">
+      <div class="rounded-3 p-4 shadow-sm bg-white">
+        <h1 class="text-center mb-3 fs-3 fw-semibold">Kayıt Ol</h1>
+        
+        <form action="" method="post">
+          <div class="mb-2">
+            {{ render_field(form.name, class="form-control py-2") }}
+          </div>
+          
+          <div class="mb-2">
+            {{ render_field(form.username, class="form-control py-2") }}
+          </div>
+          
+          <div class="mb-2">
+            {{ render_field(form.email, class="form-control py-2") }}
+          </div>
+          
+          <div class="mb-2">
+            {{ render_field(form.password, class="form-control py-2") }}
+          </div>
+          
+          <div class="mb-3">
+            {{ render_field(form.confirm, class="form-control py-2") }}
+          </div>
+          
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary py-2">Kayıt Ol</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
+
 {% endblock register %}

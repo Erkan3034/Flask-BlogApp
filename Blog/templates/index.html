@@ -4,7 +4,7 @@
 {% block main %}
 
 <div class="rounded-3 p-4 shadow-sm bg-white">
-  <h1 class="text-center  fw-semibold">👋 Hoş Geldin!</h1>
+  <h1 class="text-center  fw-semibold">👋 Hoş Geldin!, {{userName}}</h1>
   <hr>
   <p>Coder Erkan Blog'a Merhaba De! </p>
   <p class="lead">
@@ -18,10 +18,22 @@
     🚀 Gelişimine katkı sağla! <br>
 
     Sen de bu yolculuğun bir parçası olmak istiyorsan, içerikleri keşfetmeye başla!
-    Unutma, her büyük yazılımcı küçük bir "Hello World!" ile başladı. :)
+    Unutma, her büyük yazılımcı küçük bir "Hello World!" ile başladı. :
   </p>
 </div>
+<br>
+<!--Blog Post Area-->
+<div class="rounded-3 p-4 shadow-sm bg-white">
 
+<ul style="list-style-type: none; padding-left: 0;">
+  {% for article in articles  %}
+  <div class="rounded-3 p-4 mb-5 shadow-lg bg-light">
+  <li>Title : {{article.title}}  / <br>  Content : {{article.content}}</li>
+  </div>
+  {% endfor %}
+</ul>
+
+</div>
 <!-- Koşul kullanımı
 {% if answer == 1 %}
 <p>Cevap 1</p>

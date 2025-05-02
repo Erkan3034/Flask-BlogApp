@@ -1,10 +1,11 @@
 from flask import Flask , render_template, flash, redirect,session, url_for, logging,request
 from flask_mysqldb import MySQL # MySQL veritabanı ile bağlantı kurmak için flask_mysqldb kütüphanesini kullanıyoruz.
-
+import os # Ortam değişkenlerini kullanmak için os kütüphanesini kullanıyoruz.
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators # wtforms kütüphanesi ile form işlemleri yapacağız.
-
+import email_validator # email_validator kütüphanesi ile email doğrulama işlemi yapacağız.
 from passlib.hash import sha256_crypt # passlib kütüphanesi ile şifreleme işlemi yapacağız.
 
+import time # Zaman işlemleri için time kütüphanesini kullanıyoruz.
 
 #Kullanıcı Kayıt formu start
 class RegisterForm(Form):
@@ -23,7 +24,8 @@ class RegisterForm(Form):
 
 
 app = Flask(__name__)
-
+# Ortam değişkeninden alın veya rastgele bir değer üretin
+app.secret_key = os.environ.get('SECRET_KEY') or os.urandom(24)
 
 app.config['MYSQL_HOST'] = 'localhost' # MySQL sunucusunun adresi
 app.config['MYSQL_USER'] = 'admin' # MySQL kullanıcı adı
@@ -37,24 +39,36 @@ mysql = MySQL(app) # MySQL veritabanına bağlanmak için mysql nesnesi oluştur
 
 @app.route("/")
 def index():
-    articles = [
-        { 
-            "Id" : 1,
-            "title": "Flask Basics",
-            "content": "Learn the basics of Flask, a micro web framework for Python"
-        },
-        {
-            "Id" : 2,
-            "title": "Flask Templates",
-            "content": "Learn how to use templates in Flask to render dynamic content"
-        },
-        {
-            "Id" : 3,
-            "title": "Flask Forms",
-            "content": "Learn how to handle forms in Flask applications"
-        },
-        ]
-    return render_template("index.html", articles=articles)
+        # Kullanıcı oturumu kontrolü
+    if "login" in session:
+        # Kullanıcı giriş yapmışsa, kullanıcı adını al
+        session["userName"] = request.form.get("userName")
+        userName = session["userName"]
+        
+    
+        articles = [
+            { 
+             "Id" : 1,
+             "title": "Flask Basics",
+             "content": "Learn the basics of Flask, a micro web framework for Python"
+          },
+          {
+              "Id" : 2,
+              "title": "Flask Templates",
+              "content": "Learn how to use templates in Flask to render dynamic content"
+          },
+         {
+             "Id" : 3,
+             "title": "Flask Forms",
+                "content": "Learn how to handle forms in Flask applications"
+          },
+         ]
+                
+        return render_template("index.html", userName=userName ,articles=articles)
+        
+    else:
+        # Eğer kullanıcı giriş yapmamışsa, "Misafir" olarak göster
+        return render_template("index.html",userName="Misafir" )
     #return render_template("index.html" , answer=2)
 
 
@@ -78,15 +92,59 @@ def register():
         name = form.name.data
         username = form.username.data
         email = form.email.data
-        password = sha256_crypt.encrypt(form.password.data)
-        cursor = mysql.connection.cursor() # MySQL veritabanına bağlanıyoruz.
-        cursor.execute("INSERT INTO users(name, username, email, password) VALUES(%s, %s, %s, %s)", (name, username, email, password))
-        mysql.connection.commit()
-        cursor.close() # Veritabanı bağlantısını kapatıyoruz.
-        flash("Kayıt işlemi başarılı!", "success")
-        return redirect(url_for("index"))
+        password = sha256_crypt.encrypt(form.password.data)  # Şifreyi sha256_crypt ile şifreliyoruz.
+        
+        # Check if username or email already exists
+        cursor = mysql.connection.cursor()
+        cursor.execute("SELECT userName, email FROM users WHERE userName = %s OR email = %s", (username, email))
+        user = cursor.fetchone()
+        
+        if user:
+            if user['userName'] == username:
+                flash("Bu kullanıcı adı zaten kullanılıyor!", "danger")
+            if user['email'] == email:
+                flash("Bu email adresi zaten kayıtlı!", "danger")
+            cursor.close()
+            return render_template("register.html", form=form)
+        else:
+            cursor = mysql.connection.cursor() # MySQL veritabanına bağlanıyoruz.
+            cursor.execute("INSERT INTO users(name, username, email, password) VALUES(%s, %s, %s, %s)", (name, username, email, password))
+            mysql.connection.commit()
+            cursor.close() # Veritabanı bağlantısını kapatıyoruz.
+            if cursor.execute:
+                flash("Kayıt işlemi başarılı!", "success")
+            else:
+                flash("Kayıt işlemi başarısız!", "danger")
+            return redirect(url_for("login")) # Kayıt işlemi başarılı ise giriş sayfasına yönlendiriyoruz.
+            #return render_template("succededRegistration.html")
     else:
         return render_template("register.html" , form=form)
+
+
+
+@app.route("/login" , methods=["GET" , "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form.get("userName")
+        password = request.form.get("password")
+        
+        cursor = mysql.connection.cursor()
+        cursor.execute("SELECT userName,password FROM users WHERE userName = %s", (username,))
+        user = cursor.fetchone()
+        
+        if user and sha256_crypt.verify(password, user['password']):
+            session["register"] = True
+            session["userName"] = username
+            flash("Giriş başarılı!", "success")
+            return redirect(url_for("index"))
+        else:
+            flash("Kullanıcı adı veya şifre hatalı!", "danger")
+            return render_template("login.html")
+    return render_template("login.html")
+
+
+
+
 
 
 if __name__ == "__main__":
