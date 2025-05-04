@@ -1,13 +1,15 @@
 from flask import Flask , render_template, flash, redirect,session, url_for, logging,request
 from flask_mysqldb import MySQL # MySQL veritabanı ile bağlantı kurmak için flask_mysqldb kütüphanesini kullanıyoruz.
-import os # Ortam değişkenlerini kullanmak için os kütüphanesini kullanıyoruz.
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators # wtforms kütüphanesi ile form işlemleri yapacağız.
-import email_validator # email_validator kütüphanesi ile email doğrulama işlemi yapacağız.
 from passlib.hash import sha256_crypt # passlib kütüphanesi ile şifreleme işlemi yapacağız.
-
+import os # Ortam değişkenlerini kullanmak için os kütüphanesini kullanıyoruz.
 import time # Zaman işlemleri için time kütüphanesini kullanıyoruz.
+import email_validator # email_validator kütüphanesi ile email doğrulama işlemi yapacağız.
 
-#Kullanıcı Kayıt formu start
+
+
+
+#====================Kayıt formu Start============================
 class RegisterForm(Form):
     name = StringField("İsim Soyisim" , [validators.Length(min=4 , max=25)])
     username = StringField("Kullanıcı Adı" , [validators.Length(min=4 , max=25)])
@@ -20,12 +22,16 @@ class RegisterForm(Form):
     ])
     confirm = PasswordField("Şifre Tekrar")
 
-# Kullanıcı Kayıt formu end
+#====================Kayıt formu End============================
 
 
 app = Flask(__name__)
+
+
 # Ortam değişkeninden alın veya rastgele bir değer üretin
 app.secret_key = os.environ.get('SECRET_KEY') or os.urandom(24)
+
+#====================DB baglantı islemleri ============================
 
 app.config['MYSQL_HOST'] = 'localhost' # MySQL sunucusunun adresi
 app.config['MYSQL_USER'] = 'admin' # MySQL kullanıcı adı
@@ -35,7 +41,7 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor' # MySQL veritabanına bağlanmak 
 mysql = MySQL(app) # MySQL veritabanına bağlanmak için mysql nesnesi oluşturuyoruz.
 
 
-
+#====================Anasayfa Islemleri============================
 
 @app.route("/")
 def index():
@@ -71,7 +77,7 @@ def index():
         return render_template("index.html",userName="Misafir" )
     #return render_template("index.html" , answer=2)
 
-
+#====================About Islemleri============================
 @app.route("/about")
 def about():
     return render_template("about.html")
@@ -84,7 +90,7 @@ def article(article_id):
     return render_template("index.html", article_id=article_id)
 
 
-# Kullanıcı Kayıt işlemi
+#====================REGISTER Islemleri============================
 @app.route("/register" , methods=["GET" , "POST"])
 def register():
     form = RegisterForm(request.form) # Form nesnesi oluşturuyoruz, form verilerini alıyoruz.
@@ -121,20 +127,21 @@ def register():
         return render_template("register.html" , form=form)
 
 
+#====================LOGIN Islemleri============================
 
 @app.route("/login" , methods=["GET" , "POST"])
 def login():
     if request.method == "POST":
-        username = request.form.get("userName")
-        password = request.form.get("password")
+        username = request.form.get("userName") # Kullanıcı adı formdan alınıyor.
+        password = request.form.get("password") # Şifre formdan alınıyor.
         
         cursor = mysql.connection.cursor()
-        cursor.execute("SELECT userName,password FROM users WHERE userName = %s", (username,))
-        user = cursor.fetchone()
+        cursor.execute("SELECT userName,password FROM users WHERE userName = %s", (username,)) # Kullanıcı adı ile veritabanında arama yapıyoruz.
+        user = cursor.fetchone() # Kullanıcı adı ile eşleşen veriyi alıyoruz.(sözlük olarak veri gelir)
         
-        if user and sha256_crypt.verify(password, user['password']):
-            session["register"] = True
-            session["userName"] = username
+        if user and sha256_crypt.verify(password, user['password']): # Eğer kullanıcı adı ve şifre doğru ise
+            session["register"] = True # Kullanıcı giriş yapmış olarak işaretleniyor.
+            session["userName"] = username # Kullanıcı adı oturumda saklanıyor.
             flash("Giriş başarılı!", "success")
             return redirect(url_for("index"))
         else:

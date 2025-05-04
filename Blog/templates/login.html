@@ -22,9 +22,11 @@
               <label for="password" class="form-label">Şifre</label>
               <div class="input-group">
                 <input type="password" class="form-control py-2" id="password" name="password" required>
-                <button class="btn btn-outline-secondary toggle-password" type="button">
+
+                <button class="btn btn-outline-secondary toggle-password" type="button"> <!-- Şifreyi göster/gizle butonu -->
                   <i class="bi bi-eye"></i>
                 </button>
+
               </div>
               <div class="invalid-feedback">Lütfen şifrenizi girin</div>
             </div>
@@ -51,14 +53,15 @@
 
 <script>
   // Şifre göster/gizle
-  document.querySelectorAll('.toggle-password').forEach(button => {
-    button.addEventListener('click', function() {
-      const passwordInput = this.previousElementSibling;
-      const icon = this.querySelector('i');
-      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-      passwordInput.setAttribute('type', type);
-      icon.classList.toggle('bi-eye');
-      icon.classList.toggle('bi-eye-slash');
+  document.querySelectorAll('.toggle-password').forEach(button => { // Her toggle-password butonu için dinleyici ekle
+    button.addEventListener('click', function() { // Butona tıklandığında çalışacak fonksiyonumuz
+      const passwordInput = this.previousElementSibling; // Önceki kardeş elementi al (input[type="password"])
+      const icon = this.querySelector('i'); // İkonu al
+      
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password'; // Eğer şifre gizliyse, göster; değilse gizle
+      passwordInput.setAttribute('type', type); // Input'un type'ını değiştir
+      icon.classList.toggle('bi-eye'); // İkonu değiştir
+      icon.classList.toggle('bi-eye-slash'); // İkonu değiştir
     });
   });
 </script>
