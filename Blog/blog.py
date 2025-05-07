@@ -62,25 +62,9 @@ def index():
         userName = session.get("username")
         
         #Kullanıcı giriş yapmışsa, veritabanından makaleleri al
-        articles = [
-            { 
-             "Id" : 1,
-             "title": "Flask Basics",
-             "content": "Learn the basics of Flask, a micro web framework for Python"
-          },
-          {
-              "Id" : 2,
-              "title": "Flask Templates",
-              "content": "Learn how to use templates in Flask to render dynamic content"
-          },
-         {
-             "Id" : 3,
-             "title": "Flask Forms",
-                "content": "Learn how to handle forms in Flask applications"
-          },
-         ]
+
                 
-        return render_template("index.html", username=userName ,articles=articles)
+        return render_template("index.html", username=userName)
         
     else:
         # Eğer kullanıcı giriş yapmamışsa, "Misafir" olarak göster
@@ -97,7 +81,17 @@ def about():
 # Flask, dinamik URL yapısını destekler. URL'de değişkenler kullanarak dinamik içerik oluşturabiliriz.
 @app.route("/article/<string:article_id>")
 def article(article_id):
-    return render_template("index.html", article_id=article_id)
+    cursor = mysql.connection.cursor()
+    result = cursor.execute("SELECT * FROM articles WHERE id = %s", (article_id,)) # article_id'ye göre makaleyi veritabanından alıyoruz.
+    if result > 0:
+        article = cursor.fetchone()
+        # Makaleyi render ediyoruz.
+        return render_template("article.html", article=article)
+    else:
+        flash("Böyle bir makale bulunamadı!", "danger")
+        cursor.close()
+        return redirect(url_for("index"))   
+    
 
 
 #====================REGISTER Islemleri============================================================================================
@@ -175,6 +169,20 @@ def logout():
 @app.route("/dashboard")
 @login_required # Kullanıcı giriş yapmamışsa login_required decoratoru ile yönlendiriyoruz.
 def dashboard():
+        cursor = mysql.connection.cursor()
+        cursor.execute("SELECT * FROM articles WHERE author = %s", (session["username"],)) # Kullanıcı adı ile veritabanında arama yapıyoruz.
+        articles = cursor.fetchall() # Kullanıcı adı ile eşleşen verileri alıyoruz.
+        cursor.close() # Veritabanı bağlantısını kapatıyoruz.
+        if articles:
+            # Eğer makale varsa, veritabanından makaleleri alıyoruz.
+            articles_list = list(articles)
+            articles_list.sort(key=lambda x: x['id'], reverse=True)
+            # Makaleleri render ediyoruz.
+            return render_template("dashboard.html", articles=articles_list)
+        else:
+            # Eğer makale yoksa, boş bir liste döndürüyoruz.
+            articles = []
+            cursor.close()
         return render_template("dashboard.html")
 
     
@@ -209,6 +217,29 @@ def add_article():
 class ArticleForm(Form):
     title = StringField("Makale Başlığı", [validators.Length(min=5, max=100)]) # Makale başlığı için minimum 5, maksimum 100 karakter uzunluğunda olmalıdır.
     content = TextAreaField("Makale İçeriği", [validators.Length(min=10)]) # Makale içeriği için minimum 10 karakter uzunluğunda olmalıdır.
+
+
+
+@app.route("/articles")
+@login_required # Kullanıcı giriş yapmamışsa login_required decoratoru ile yönlendiriyoruz.
+def articles():
+    cursor = mysql.connection.cursor()
+    result = cursor.execute("SELECT * FROM articles")
+    if result > 0:
+        # Eğer makale varsa, veritabanından makaleleri alıyoruz.
+        articles = cursor.fetchall()
+        # Makaleleri ters sırada sıralıyoruz (en son eklenen makale en üstte olacak şekilde)
+        articles_list = list(articles)
+        articles_list.sort(key=lambda x: x['id'], reverse=True)
+        # Makaleleri render ediyoruz.
+    
+        return(render_template("articles.html" , articles=articles_list))
+    else:
+        # Eğer makale yoksa, boş bir liste döndürüyoruz.
+        articles = []
+    cursor.close()
+    return render_template("articles.html", articles=articles_list)
+
 
 if __name__ == "__main__":
     app.run(debug=True)

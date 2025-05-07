@@ -15,6 +15,8 @@
 
     <!-- Custom styles -->
     <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+    <!--Ckeditor styles-->
+    <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/45.0.0/ckeditor5.css">
 
     {% block extra_css %}{% endblock %}
 </head>
@@ -38,6 +40,13 @@
     
     {% endblock addarticle %}    
 
+    {% block articles %}
+    
+    {% endblock articles %}
+
+    {% block article %}
+    
+    {% endblock article %}
 
     {% block dashboard %}
     
@@ -92,11 +101,37 @@
     <!-- Custom JavaScript -->
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 
-    <!-- CKEditor for rich text editing -->
-    <script src="https://cdn.ckeditor.com/4.25.1-lts/standard/ckeditor.js"></script>
-    <script>
-		CKEDITOR.replace('content');
-	</script>
+
+  <!-- CKEditor 5 JS -->
+<script src="https://cdn.ckeditor.com/ckeditor5/45.0.0/ckeditor5.umd.js"></script>
+		<script>
+		const {
+			ClassicEditor,
+			Essentials,
+			Bold,
+			Italic,
+			Font,
+			Paragraph
+		} = CKEDITOR;
+
+		ClassicEditor
+			.create( document.querySelector( '#content' ), {
+				licenseKey: 'eyJhbGciOiJFUzI1NiJ9.eyJleHAiOjE3NDc4NzE5OTksImp0aSI6IjFiZGUwNzllLWM3YWYtNGJiOS1hODU2LWI3MzM1NDIzNDg4MSIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL3Byb3h5LWV2ZW50LmNrZWRpdG9yLmNvbSIsImRpc3RyaWJ1dGlvbkNoYW5uZWwiOlsiY2xvdWQiLCJkcnVwYWwiLCJzaCJdLCJ3aGl0ZUxhYmVsIjp0cnVlLCJsaWNlbnNlVHlwZSI6InRyaWFsIiwiZmVhdHVyZXMiOlsiKiJdLCJ2YyI6IjE4YjZhMWVjIn0.URImxNO9htpR5FTok6ST5En0nX0ZUxBHTu-KBS_R2crAvmyvV6etJQTYXsBD6ma8H5NKYOO2L27Sud60mMOvFQ', // Create a free account on https://portal.ckeditor.com/checkout?plan=free
+				plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
+				toolbar: [
+					'undo', 'redo', '|', 'bold', 'italic', '|',
+					'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+				]
+			} )
+				.then( editor => {
+					window.editor = editor;
+				} )
+				.catch( error => {
+					console.error( error );
+				} );
+		</script>
+
+
     {% block extra_js %}{% endblock %}
 </body>
 

@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+
+{% block articles %}
+<section class="py-5 bg-light">
+  <div class="container">
+    <h1 class="text-center fw-bold mb-5" style="color: #003087;">Blog Yazıları</h1>
+    <hr class="w-50 mx-auto mb-5" style="border-color: #007BFF;">
+
+    {% if articles %}
+      <!-- Blog Post Area -->
+      <ul class="list-group shadow-sm bg-white rounded-3">
+        {% for article in articles %}
+          <li class="list-group-item border-0 mb-3">
+            <div class="card h-100 shadow transition-hover" style="border: 1px solid #E3F2FD;">
+              <div class="card-body">
+                <h5 class="card-title fw-bold" style="color: #003087;">{{ article.title }}</h5>
+                <p class="card-text text-muted">{{ article.content|truncate(200) }}</p>
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                  <small class="text-muted">
+                    {% if article.created_date %}
+                      {{ article.created_date.strftime('%d %b %Y') }}
+                    {% endif %}
+                    {% if article.author %}
+                      | {{ article.author }}
+                    {% endif %}
+                  </small>
+                  <a href="{{ url_for('articles', slug=article.slug) }}" class="btn btn-primary btn-sm fw-medium" style="background-color: #007BFF; border-color: #007BFF;">Devamını Oku</a>
+                </div>
+              </div>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="alert alert-info text-center rounded-3 shadow-sm" role="alert" style="background-color: #E3F2FD; border-color: #BBDEFB;">
+        <h4 class="fw-bold mb-0" style="color: #003087;">Henüz Makale Eklenmemiş</h4>
+        <p class="mt-2 mb-0">Blog yazıları yakında burada olacak!</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+  .transition-hover {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .transition-hover:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 123, 255, 0.15) !important;
+  }
+  .btn-primary:hover {
+    background-color: #005BC4;
+    border-color: #005BC4;
+    transform: scale(1.05);
+    transition: all 0.2s ease;
+  }
+  .card {
+    background-color: #FFFFFF;
+  }
+  .list-group {
+    background-color: transparent;
+  }
+</style>
+{% endblock articles %}

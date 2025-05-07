@@ -3,347 +3,115 @@
 {% block dashboard %}
 <!-- CSS Stiller -->
 <style>
-    .article-preview-img {
-        width: 100px;
-        height: 70px;
-        object-fit: cover;
+    .article-table {
+        background-color: #FFFFFF;
+        border-radius: 8px;
+        overflow: hidden;
     }
-    
-    .table-hover tbody tr:hover {
+    .article-table th, .article-table td {
+        vertical-align: middle;
+        padding: 12px;
+    }
+    .article-table tr:hover {
         background-color: rgba(13, 110, 253, 0.05);
+        transition: background-color 0.2s ease;
+    }
+    .btn-primary {
+        background-color: #007BFF;
+        border-color: #007BFF;
+        padding: 8px 16px;
+        font-weight: 500;
+    }
+    .btn-primary:hover {
+        background-color: #005BC4;
+        border-color: #005BC4;
+        transform: translateY(-2px);
+        transition: all 0.2s ease;
+    }
+    .btn-warning, .btn-danger {
+        padding: 6px 12px;
+        font-size: 0.875rem;
+    }
+    .btn-warning:hover, .btn-danger:hover {
+        transform: translateY(-2px);
+        transition: all 0.2s ease;
+    }
+    .alert {
+        border-radius: 8px;
+    }
+    .dashboard-header {
+        color: #003087;
+    }
+    .welcome-text {
+        color: #6C757D;
+        font-size: 1rem;
     }
 </style>
 
 <!-- Main Content -->
-<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 m-2 border-bottom">
-    <h1 class="h2">Makale Yönetimi</h1>
-    <div class="btn-toolbar mb-2 mb-md-0">
-        <div class="btn-group me-2">
-            <button type="button" class="btn btn-sm btn-outline-secondary">
-                <i class="bi bi-download"></i> Dışa Aktar
-            </button>
-            <button type="button" class="btn btn-sm btn-outline-secondary">
-                <i class="bi bi-share"></i> Paylaş
-            </button>
+<div class="container-fluid px-4 py-5">
+    <h2 class="dashboard-header fw-bold text-center mb-3">Dashboard</h2>
+    <p class="welcome-text text-center mb-4">Hoş geldiniz, {{ session.username }}!</p>
+    <hr class="w-50 mx-auto mb-5" style="border-color: #007BFF;">
+
+    {% if articles %}
+        <!-- Articles Table -->
+        <div class="card shadow-sm article-table mb-4">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover mb-0">
+                        <thead style="background-color: #E3F2FD;">
+                            <tr>
+                                <th scope="col" style="width: 10%;">Id</th>
+                                <th scope="col" style="width: 30%;">Başlık</th>
+                                <th scope="col" style="width: 20%;">Yazar</th>
+                                <th scope="col" style="width: 20%;">Tarih</th>
+                                <th scope="col" style="width: 10%;"></th>
+                                <th scope="col" style="width: 10%;"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for article in articles %}
+                                <tr>
+                                    <th scope="row">{{ article.id }}</th>
+                                    <td> <a href="/articles/{{ article.id }}">{{ article.title }}</a></td>
+                                    <td>{{ article.author }}</td>
+                                    <td>
+                                        {% if article.created_date %}
+                                            {{ article.created_date.strftime('%d.%m.%Y') }}
+                                        {% else %}
+                                            
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="/edit/{{ article.id }}" class="btn btn-warning btn-sm">Düzenle</a>
+                                    </td>
+                                    <td>
+                                        <a href="/delete/{{ article.id }}" class="btn btn-danger btn-sm" onclick="return confirm('Bu makaleyi silmek istediğinizden emin misiniz?');">Sil</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-        <button type="button" class="btn btn-sm btn-primary">
-            <i class="bi bi-plus-lg"></i> <a href="/addarticle" class="text-white text-decoration-none">Yeni Makale</a>
-        </button>
+    {% else %}
+        <!-- No Articles Message -->
+        <div class="alert alert-info text-center rounded-3 shadow-sm" role="alert" style="background-color: #E3F2FD; border-color: #BBDEFB;">
+            <h4 class="fw-bold mb-2" style="color: #003087;">Henüz Makale Eklenmemiş</h4>
+            <p class="mt-2 mb-0">Blog yazılarınızı eklemeye başlayın!</p>
+        </div>
+    {% endif %}
+
+    <!-- Add New Article Button -->
+    <div class="text-center mt-4">
+        <a href="/addarticle" class="btn btn-primary shadow-sm">
+            <i class="bi bi-plus-lg me-2"></i>Yeni Makale Ekle
+        </a>
     </div>
 </div>
 
-                <!-- Stats Cards -->
-                <div class="row mb-4 ms-3 me-3">
-                    <div class="col-md-3">
-                        <div class="card text-white bg-primary mb-3">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="card-title">Toplam Makale</h6>
-                                        <h2 class="mb-0">125</h2>
-                                    </div>
-                                    <i class="bi bi-file-earmark-text fs-1"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card text-white bg-success mb-3">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="card-title">Yayında</h6>
-                                        <h2 class="mb-0">98</h2>
-                                    </div>
-                                    <i class="bi bi-check-circle fs-1"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card text-white bg-warning mb-3">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="card-title">Taslak</h6>
-                                        <h2 class="mb-0">27</h2>
-                                    </div>
-                                    <i class="bi bi-hourglass-split fs-1"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="card text-white bg-info mb-3">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="card-title">Yorumlar</h6>
-                                        <h2 class="mb-0">243</h2>
-                                    </div>
-                                    <i class="bi bi-chat-left-dots fs-1"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Filter Section -->
-                <div class="row mb-3">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="row g-3">
-                                    <div class="col-md-3">
-                                        <select class="form-select" aria-label="Kategori filtresi">
-                                            <option selected>Kategori Seçin</option>
-                                            <option value="1">Teknoloji</option>
-                                            <option value="2">Sağlık</option>
-                                            <option value="3">Yaşam</option>
-                                            <option value="4">Spor</option>
-                                            <option value="5">Ekonomi</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <select class="form-select" aria-label="Durum filtresi">
-                                            <option selected>Durum Seçin</option>
-                                            <option value="1">Yayında</option>
-                                            <option value="2">Taslak</option>
-                                            <option value="3">İnceleme Bekliyor</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <select class="form-select" aria-label="Tarih filtresi">
-                                            <option selected>Tarih Seçin</option>
-                                            <option value="1">Bugün</option>
-                                            <option value="2">Bu Hafta</option>
-                                            <option value="3">Bu Ay</option>
-                                            <option value="4">Son 3 Ay</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" placeholder="Makale ara...">
-                                            <button class="btn btn-outline-secondary" type="button">
-                                                <i class="bi bi-search"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Articles Table -->
-                <div class="card">
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th scope="col" style="width: 40px;">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="" id="checkAll">
-                                            </div>
-                                        </th>
-                                        <th scope="col" style="width: 100px;">Görsel</th>
-                                        <th scope="col">Başlık</th>
-                                        <th scope="col">Kategori</th>
-                                        <th scope="col">Yazar</th>
-                                        <th scope="col">Durum</th>
-                                        <th scope="col">Yayın Tarihi</th>
-                                        <th scope="col">Görüntülenme</th>
-                                        <th scope="col">İşlemler</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="">
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <img src="/api/placeholder/100/70" alt="Makale görseli" class="article-preview-img rounded">
-                                        </td>
-                                        <td>Yapay Zeka Teknolojileri ve Geleceğe Etkileri</td>
-                                        <td>Teknoloji</td>
-                                        <td>Ahmet Yılmaz</td>
-                                        <td><span class="badge bg-success">Yayında</span></td>
-                                        <td>05.05.2025</td>
-                                        <td>1,245</td>
-                                        <td>
-                                            <div class="btn-group btn-group-sm">
-                                                <button type="button" class="btn btn-outline-primary" title="Düzenle">
-                                                    <i class="bi bi-pencil"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-outline-info" title="Görüntüle">
-                                                    <i class="bi bi-eye"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-outline-danger" title="Sil">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="">
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <img src="/api/placeholder/100/70" alt="Makale görseli" class="article-preview-img rounded">
-                                        </td>
-                                        <td>Sağlıklı Beslenme İçin 10 Altın Kural</td>
-                                        <td>Sağlık</td>
-                                        <td>Ayşe Demir</td>
-                                        <td><span class="badge bg-success">Yayında</span></td>
-                                        <td>03.05.2025</td>
-                                        <td>2,783</td>
-                                        <td>
-                                            <div class="btn-group btn-group-sm">
-                                                <button type="button" class="btn btn-outline-primary" title="Düzenle">
-                                                    <i class="bi bi-pencil"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-outline-info" title="Görüntüle">
-                                                    <i class="bi bi-eye"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-outline-danger" title="Sil">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="">
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <img src="/api/placeholder/100/70" alt="Makale görseli" class="article-preview-img rounded">
-                                        </td>
-                                        <td>2025 Yılının En İyi Spor Etkinlikleri</td>
-                                        <td>Spor</td>
-                                        <td>Mehmet Kaya</td>
-                                        <td><span class="badge bg-warning text-dark">Taslak</span></td>
-                                        <td>-</td>
-                                        <td>0</td>
-                                        <td>
-                                            <div class="btn-group btn-group-sm">
-                                                <button type="button" class="btn btn-outline-primary" title="Düzenle">
-                                                    <i class="bi bi-pencil"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-outline-info" title="Görüntüle">
-                                                    <i class="bi bi-eye"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-outline-danger" title="Sil">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="">
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <img src="/api/placeholder/100/70" alt="Makale görseli" class="article-preview-img rounded">
-                                        </td>
-                                        <td>Ekonomide Yeni Dönem: Dijital Para Birimleri</td>
-                                        <td>Ekonomi</td>
-                                        <td>Zeynep Arslan</td>
-                                        <td><span class="badge bg-info text-dark">İnceleme</span></td>
-                                        <td>-</td>
-                                        <td>0</td>
-                                        <td>
-                                            <div class="btn-group btn-group-sm">
-                                                <button type="button" class="btn btn-outline-primary" title="Düzenle">
-                                                    <i class="bi bi-pencil"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-outline-info" title="Görüntüle">
-                                                    <i class="bi bi-eye"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-outline-danger" title="Sil">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="">
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <img src="/api/placeholder/100/70" alt="Makale görseli" class="article-preview-img rounded">
-                                        </td>
-                                        <td>Ev Dekorasyonunda 2025 Trendleri</td>
-                                        <td>Yaşam</td>
-                                        <td>Elif Yıldız</td>
-                                        <td><span class="badge bg-success">Yayında</span></td>
-                                        <td>01.05.2025</td>
-                                        <td>3,120</td>
-                                        <td>
-                                            <div class="btn-group btn-group-sm">
-                                                <button type="button" class="btn btn-outline-primary" title="Düzenle">
-                                                    <i class="bi bi-pencil"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-outline-info" title="Görüntüle">
-                                                    <i class="bi bi-eye"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-outline-danger" title="Sil">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        
-                        <!-- Pagination -->
-                        <div class="d-flex justify-content-between align-items-center mt-3">
-                            <div>
-                                <span>Toplam 125 makaleden 1-5 arası gösteriliyor</span>
-                            </div>
-                            <nav aria-label="Makale sayfaları">
-                                <ul class="pagination mb-0">
-                                    <li class="page-item disabled">
-                                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Önceki</a>
-                                    </li>
-                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                    <li class="page-item">
-                                        <a class="page-link" href="#">Sonraki</a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </div>
-                    </div>
-                </div>
-            </main>
-        </div>
-    </div>
-
-    <!-- Bootstrap 5.3 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Tüm seçim checkbox'u işlevi
-        document.getElementById('checkAll').addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('tbody .form-check-input');
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = this.checked;
-            });
-        });
-    </script>
-</body>
-</html>
-
-{%endblock  dashboard%}
+<!-- Bootstrap 5.3 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock dashboard %}
