@@ -46,12 +46,11 @@ mysql = MySQL(app) # MySQL veritabanına bağlanmak için mysql nesnesi oluştur
 @app.route("/")
 def index():
         # Kullanıcı oturumu kontrolü
-    if "login" in session:
-        # Kullanıcı giriş yapmışsa, kullanıcı adını al
-        session["userName"] = request.form.get("userName")
-        userName = session["userName"]
+    if "logged_in" in session:
+        # Kullanıcı giriş yapmışsa, session'dan kullanıcı adını al
+        userName = session.get("username")
         
-    
+        #Kullanıcı giriş yapmışsa, veritabanından makaleleri al
         articles = [
             { 
              "Id" : 1,
@@ -70,11 +69,11 @@ def index():
           },
          ]
                 
-        return render_template("index.html", userName=userName ,articles=articles)
+        return render_template("index.html", username=userName ,articles=articles)
         
     else:
         # Eğer kullanıcı giriş yapmamışsa, "Misafir" olarak göster
-        return render_template("index.html",userName="Misafir" )
+        return render_template("index.html",username="Misafir" )
     #return render_template("index.html" , answer=2)
 
 #====================About Islemleri============================
@@ -132,16 +131,17 @@ def register():
 @app.route("/login" , methods=["GET" , "POST"])
 def login():
     if request.method == "POST":
-        username = request.form.get("userName") # Kullanıcı adı formdan alınıyor.
+        username = request.form.get("username") # Kullanıcı adı formdan alınıyor.
         password = request.form.get("password") # Şifre formdan alınıyor.
-        
+        #print(username)
         cursor = mysql.connection.cursor()
         cursor.execute("SELECT userName,password FROM users WHERE userName = %s", (username,)) # Kullanıcı adı ile veritabanında arama yapıyoruz.
         user = cursor.fetchone() # Kullanıcı adı ile eşleşen veriyi alıyoruz.(sözlük olarak veri gelir)
         
         if user and sha256_crypt.verify(password, user['password']): # Eğer kullanıcı adı ve şifre doğru ise
-            session["register"] = True # Kullanıcı giriş yapmış olarak işaretleniyor.
-            session["userName"] = username # Kullanıcı adı oturumda saklanıyor.
+            #------------Session işlemleri ------------------
+            session["logged_in"] = True # Kullanıcı giriş yapmış olarak işaretleniyor.
+            session["username"] = username # Kullanıcı adı oturumda saklanıyor.
             flash("Giriş başarılı!", "success")
             return redirect(url_for("index"))
         else:
@@ -152,7 +152,13 @@ def login():
 
 
 
+#====================LOGOUT Islemleri============================
+@app.route("/logout")
+def logout():
+    session.clear() # Oturumu temizliyoruz.
+    flash("Çıkış işlemi başarılı!", "success") # Başarılı çıkış mesajı gösteriyoruz.
 
+    return redirect(url_for("index")) # Anasayfaya yönlendiriyoruz.
 
 if __name__ == "__main__":
     app.run(debug=True)

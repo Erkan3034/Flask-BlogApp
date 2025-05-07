@@ -4,7 +4,7 @@
 {% block main %}
 
 <div class="rounded-3 p-4 shadow-sm bg-white">
-  <h1 class="text-center  fw-semibold">👋 Hoş Geldin!, {{userName}}</h1>
+  <h1 class="text-center  fw-semibold">👋 Hoş Geldin!, {{username}}</h1>
   <hr>
   <p>Coder Erkan Blog'a Merhaba De! </p>
   <p class="lead">
@@ -22,6 +22,8 @@
   </p>
 </div>
 <br>
+
+{% if session["logged_in"] %}
 <!--Blog Post Area-->
 <div class="rounded-3 p-4 shadow-sm bg-white">
 
@@ -34,6 +36,9 @@
 </ul>
 
 </div>
+{% else %}
+<p class="text-success lead display-4">Blog yazılarımızı görmek için giriş yapın.</p>
+{% endif %}
 <!-- Koşul kullanımı
 {% if answer == 1 %}
 <p>Cevap 1</p>

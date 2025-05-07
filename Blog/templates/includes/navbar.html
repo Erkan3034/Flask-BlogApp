@@ -28,13 +28,26 @@
 
       <!-- Right side links start -->
       <ul class="navbar-nav ms-auto ">
+
+        {% if session["logged_in"] %} <!-- Eğer kullanıcı giriş yapmışsa  Çıkış butonunu göster -->
+
         <li class="nav-item">
-          <a class="nav-link " href="/register">Kayıt Olun</a>
+          <a class="nav-link" href="/logout">Çıkış Yapın</a>
         </li>
 
+        {% else %}
         <li class="nav-item">
           <a class="nav-link" href="/login">Giriş Yapın</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link " href="/register">Kayıt Olun</a>
+        </li>
+        {% endif %}
+
+
+
+
+
 
 
         <li class="nav-item">
