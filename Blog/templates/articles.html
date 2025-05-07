@@ -24,7 +24,7 @@
                       | {{ article.author }}
                     {% endif %}
                   </small>
-                  <a href="{{ url_for('articles', slug=article.slug) }}" class="btn btn-primary btn-sm fw-medium" style="background-color: #007BFF; border-color: #007BFF;">Devamını Oku</a>
+                  <a href="/article/{{article.id}}" class="btn btn-primary btn-sm fw-medium" style="background-color: #007BFF; border-color: #007BFF;">Devamını Oku</a>
                 </div>
               </div>
             </div>
