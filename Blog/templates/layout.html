@@ -24,13 +24,24 @@
     <!-- Navigation -->
     {% include 'includes/navbar.html' %}
 
+    <!-- Navigation End-->
+    
+    <!-- Messages Area -->
     {% include  "includes/messages.html" %}
+    <!-- Messages Area End-->
+
 
     <!-- Main Content Area -->
     <div class="container mt-4">
 
-        
+    {% block addarticle %}
+    
+    {% endblock addarticle %}    
 
+
+    {% block dashboard %}
+    
+    {% endblock dashboard %}
 
         <!-- Register Area -->
         {% block register %}
@@ -81,6 +92,11 @@
     <!-- Custom JavaScript -->
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 
+    <!-- CKEditor for rich text editing -->
+    <script src="https://cdn.ckeditor.com/4.25.1-lts/standard/ckeditor.js"></script>
+    <script>
+		CKEDITOR.replace('content');
+	</script>
     {% block extra_js %}{% endblock %}
 </body>
 

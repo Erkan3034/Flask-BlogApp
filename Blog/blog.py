@@ -1,3 +1,4 @@
+from functools import wraps
 from flask import Flask , render_template, flash, redirect,session, url_for, logging,request
 from flask_mysqldb import MySQL # MySQL veritabanı ile bağlantı kurmak için flask_mysqldb kütüphanesini kullanıyoruz.
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators # wtforms kütüphanesi ile form işlemleri yapacağız.
@@ -8,8 +9,18 @@ import email_validator # email_validator kütüphanesi ile email doğrulama işl
 
 
 
+#====================Kullanıcı giirş decoratoru========================================================================================
+def login_required(f):
+    @wraps(f) # Decorator fonksiyonu oluşturuyoruz.
+    def decorated_function(*args, **kwargs):
+        if "logged_in" not in session:
+            flash("Bu sayfayı görüntülemek için öncelikle giriş yapmalısınız!", "danger")
+            return redirect(url_for("login"))
+        return f(*args, **kwargs)
+    return decorated_function
 
-#====================Kayıt formu Start============================
+
+#====================Kayıt formu Start===============================================================================================
 class RegisterForm(Form):
     name = StringField("İsim Soyisim" , [validators.Length(min=4 , max=25)])
     username = StringField("Kullanıcı Adı" , [validators.Length(min=4 , max=25)])
@@ -22,7 +33,7 @@ class RegisterForm(Form):
     ])
     confirm = PasswordField("Şifre Tekrar")
 
-#====================Kayıt formu End============================
+#====================Kayıt formu End===============================================================================================
 
 
 app = Flask(__name__)
@@ -31,7 +42,7 @@ app = Flask(__name__)
 # Ortam değişkeninden alın veya rastgele bir değer üretin
 app.secret_key = os.environ.get('SECRET_KEY') or os.urandom(24)
 
-#====================DB baglantı islemleri ============================
+#====================DB baglantı islemleri ===============================================================================================
 
 app.config['MYSQL_HOST'] = 'localhost' # MySQL sunucusunun adresi
 app.config['MYSQL_USER'] = 'admin' # MySQL kullanıcı adı
@@ -41,7 +52,7 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor' # MySQL veritabanına bağlanmak 
 mysql = MySQL(app) # MySQL veritabanına bağlanmak için mysql nesnesi oluşturuyoruz.
 
 
-#====================Anasayfa Islemleri============================
+#====================Anasayfa Islemleri===============================================================================================
 
 @app.route("/")
 def index():
@@ -76,7 +87,7 @@ def index():
         return render_template("index.html",username="Misafir" )
     #return render_template("index.html" , answer=2)
 
-#====================About Islemleri============================
+#====================About Islemleri===============================================================================================
 @app.route("/about")
 def about():
     return render_template("about.html")
@@ -89,7 +100,7 @@ def article(article_id):
     return render_template("index.html", article_id=article_id)
 
 
-#====================REGISTER Islemleri============================
+#====================REGISTER Islemleri============================================================================================
 @app.route("/register" , methods=["GET" , "POST"])
 def register():
     form = RegisterForm(request.form) # Form nesnesi oluşturuyoruz, form verilerini alıyoruz.
@@ -126,7 +137,7 @@ def register():
         return render_template("register.html" , form=form)
 
 
-#====================LOGIN Islemleri============================
+#====================LOGIN Islemleri===============================================================================================
 
 @app.route("/login" , methods=["GET" , "POST"])
 def login():
@@ -152,13 +163,52 @@ def login():
 
 
 
-#====================LOGOUT Islemleri============================
+#====================LOGOUT Islemleri===============================================================================================
 @app.route("/logout")
+@login_required # Kullanıcı giriş yapmamışsa login_required decoratoru ile yönlendiriyoruz.
 def logout():
-    session.clear() # Oturumu temizliyoruz.
-    flash("Çıkış işlemi başarılı!", "success") # Başarılı çıkış mesajı gösteriyoruz.
+        session.clear() # Oturumu temizliyoruz.    
+        flash("Çıkış işlemi başarılı!", "success") # Başarılı çıkış mesajı gösteriyoruz.
+        return redirect(url_for("index")) # Anasayfaya yönlendiriyoruz.
+    
+#====================Kullanıcı Profil Islemleri====================================================================================
+@app.route("/dashboard")
+@login_required # Kullanıcı giriş yapmamışsa login_required decoratoru ile yönlendiriyoruz.
+def dashboard():
+        return render_template("dashboard.html")
 
-    return redirect(url_for("index")) # Anasayfaya yönlendiriyoruz.
+    
+
+
+
+#====================Makale Ekleme Islemleri===============================================================================================
+@app.route("/addarticle", methods=["GET", "POST"])
+@login_required # Kullanıcı giriş yapmamışsa login_required decoratoru ile yönlendiriyoruz.
+def add_article():
+    form = ArticleForm(request.form) # Makale ekleme formunu oluşturuyoruz.
+    if request.method == "POST" and form.validate(): # Eğer form geçerli ise
+        # Formdan gelen verileri alıyoruz.
+        title = form.title.data
+        content = form.content.data
+        # Veritabanına makale ekleme işlemi
+        cursor = mysql.connection.cursor()
+        cursor.execute("INSERT INTO articles(title,author, content) VALUES(%s,%s, %s)", (title,session["username"], content))
+        mysql.connection.commit()
+        cursor.close()
+        flash("Makale başarıyla eklendi!", "success") # Başarılı ekleme mesajı gösteriyoruz.
+        return redirect(url_for("dashboard")) # Makale ekleme işlemi başarılı ise anasayfaya yönlendiriyoruz.
+    else:
+        # Eğer form geçerli değilse veya GET isteği ise formu gösteriyoruz.
+        if form.errors:
+            for error in form.errors.values():
+                flash(error[0], "danger")
+        return render_template("addarticle.html", form=form)
+
+#====================Makale EKLEME FORMU==============================================================================================
+
+class ArticleForm(Form):
+    title = StringField("Makale Başlığı", [validators.Length(min=5, max=100)]) # Makale başlığı için minimum 5, maksimum 100 karakter uzunluğunda olmalıdır.
+    content = TextAreaField("Makale İçeriği", [validators.Length(min=10)]) # Makale içeriği için minimum 10 karakter uzunluğunda olmalıdır.
 
 if __name__ == "__main__":
     app.run(debug=True)
