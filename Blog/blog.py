@@ -289,13 +289,13 @@ def update(id):
         new_content = form.content.data
         query4= "UPDATE articles SET title = %s, content = %s WHERE id = %s" # Makale id'sine göre makaleyi veritabanından güncelliyoruz.
         cursor.execute(query4,(new_title, new_content, id))
-        mysql.connection.commit()
+        mysql.connection.commit() # Veritabanına güncellemeleri kaydediyoruz.
         cursor.close()
         flash("Makale başarıyla güncellendi!", "success")
         cursor.close()       
         return redirect(url_for("dashboard"))
     else:
-        if form.errors:
+        if form.errors: 
             for error in form.errors.values():
                 flash(error[0], "danger")
             return render_template("update.html", form=form, article=article)

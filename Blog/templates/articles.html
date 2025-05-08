@@ -1,9 +1,42 @@
 {% extends "layout.html" %}
 
 {% block articles %}
+<style>
+.search-container {
+    position: relative;
+}
+
+.search-input {
+    height: 50px;
+    border-radius: 30px;
+    padding-left: 35px;
+    border: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.search-icon {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    color: #333;
+}
+</style>
 <section class="py-5 bg-light">
   <div class="container">
     <h1 class="text-center fw-bold mb-5" style="color: #003087;">Blog Yazıları</h1>
+    <div class="container">
+      <!--search bar -->
+     <div class="row justify-content-center">
+       <div class="col-md-6">
+         <div class="search-container">
+           <input type="text" class="form-control search-input" placeholder="Makale Ara...">
+             <i class="fas fa-search search-icon"></i>
+          </div>
+        </div>
+     </div>
+     <!--search bar end -->
+</div>
     <hr class="w-50 mx-auto mb-5" style="border-color: #007BFF;">
 
     {% if articles %}
