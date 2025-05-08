@@ -45,7 +45,7 @@ app.secret_key = os.environ.get('SECRET_KEY') or os.urandom(24)
 #====================DB baglantı islemleri ===============================================================================================
 
 app.config['MYSQL_HOST'] = 'localhost' # MySQL sunucusunun adresi
-app.config['MYSQL_USER'] = 'admin' # MySQL kullanıcı adı
+app.config['MYSQL_USER'] = 'root' # MySQL kullanıcı adı
 app.config['MYSQL_PASSWORD'] = 'Erkan1205/*-+' # MySQL şifresi
 app.config['MYSQL_DB'] = 'coder_erkan_blog' # MySQL veritabanı adı
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor' # MySQL veritabanına bağlanmak için kullanılacak cursor sınıfı
@@ -240,6 +240,67 @@ def articles():
     cursor.close()
     return render_template("articles.html", articles=articles_list)
 
+
+
+#====================Makale Silme Islemleri===============================================================================================
+@app.route("/delete/<string:id>")
+@login_required # Kullanıcı giriş yapmamışsa login_required decoratoru ile yönlendiriyoruz.
+def delete(id):
+    cursor = mysql.connection.cursor()
+    query = "SELECT * FROM articles WHERE author = %s AND id = %s" # Makale id'sine göre makaleyi veritabanından siliyoruz.
+    result = cursor.execute(query,(session["username"],id)) # Makale id'sine göre makaleyi veritabanından siliyoruz.
+
+    if result > 0: #1 veya 0 dönmesi durumunda 
+        query2="DELETE FROM articles WHERE id = %s"# Makale id'sine göre makaleyi veritabanından siliyoruz.
+        cursor.execute(query2,(id,))
+        mysql.connection.commit()
+        cursor.close()    
+        flash("Makale başarıyla silindi!", "success") # Başarılı silme mesajı gösteriyoruz.
+        return redirect(url_for("dashboard")) # Makale silme işlemi başarılı ise anasayfaya yönlendiriyoruz.
+    else:
+        flash("Böyle bir makale bulunamadı veya yetkiniz yok!", "danger")
+        return redirect(url_for("index")) # Makale silme işlemi başarısız ise anasayfaya yönlendiriyoruz.
+
+
+#====================Makale Güncelleme Islemleri===============================================================================================
+@app.route("/edit/<string:id>", methods=["GET", "POST"])
+@login_required # Kullanıcı giriş yapmamışsa login_required decoratoru ile yönlendiriyoruz.
+def update(id):
+    if request.method == "GET":
+
+        cursor = mysql.connection.cursor()
+        query3 = "SELECT * FROM articles WHERE author = %s AND id = %s" # Makale id'sine göre makaleyi veritabanından alıyoruz.
+        result = cursor.execute(query3 ,(session["username"],id)) # Makale id'sine göre makaleyi veritabanından alıyoruz.
+        if result > 0:
+            article = cursor.fetchone()
+            form = ArticleForm(request.form)    
+            form.title.data = article["title"]
+            form.content.data = article["content"]
+            return render_template("update.html", form=form)
+        else:
+            flash("Böyle bir makale bulunamadı!", "danger")
+            cursor.close()
+            return redirect(url_for("index"))
+        # Eğer form geçerli değilse veya GET isteği ise formu gösteriyoruz.
+    elif request.method == "POST":
+        cursor = mysql.connection.cursor()
+        form = ArticleForm(request.form)
+        new_title = form.title.data
+        new_content = form.content.data
+        query4= "UPDATE articles SET title = %s, content = %s WHERE id = %s" # Makale id'sine göre makaleyi veritabanından güncelliyoruz.
+        cursor.execute(query4,(new_title, new_content, id))
+        mysql.connection.commit()
+        cursor.close()
+        flash("Makale başarıyla güncellendi!", "success")
+        cursor.close()       
+        return redirect(url_for("dashboard"))
+    else:
+        if form.errors:
+            for error in form.errors.values():
+                flash(error[0], "danger")
+            return render_template("update.html", form=form, article=article)
+
+    
 
 if __name__ == "__main__":
     app.run(debug=True)
