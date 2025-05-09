@@ -1,74 +1,60 @@
-<nav class="navbar navbar-expand-lg  navbar-dark" style="background-color: #112D4E;">
+<nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(90deg, #112D4E, #3F72AF); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
   <div class="container-fluid">
-    <a class="navbar-brand text-white fw-bold h-4" href="/" style="font-family:'Times New Roman', Times, serif;">Coder
-      Erkan</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <a class="navbar-brand text-white fw-bold" href="/" style="font-family: 'Georgia', serif; font-size: 1.5rem; letter-spacing: 1px; padding: 0.5rem 1rem; background: rgba(255, 255, 255, 0.1); border-radius: 5px;">
+      Coder Erkan
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-
       <!-- Left side links start -->
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" href="/about">Hakkımda</a>
-        </li>
 
-        <li class="nav-item">
-          <a class="nav-link" href="/articles">Makaleler</a>
-        </li>
-
-
-        <li class="nav-item">
-          <a class="nav-link " href="#">Link 2</a>
-        </li>
-
-      </ul>
       <!-- Left side links end -->
 
       <!-- Right side links start -->
-      <ul class="navbar-nav ms-auto ">
-
-        {% if session["logged_in"] %} <!-- Eğer kullanıcı giriş yapmışsa  Çıkış butonunu göster -->
-
-        <li class="nav-item">
-          <a class="nav-link" href="/dashboard">Kontrol Paneli</a>
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+          <a class="nav-link active text-white" href="/about" style="transition: all 0.3s ease; padding: 0.5rem 1rem;">
+            Hakkımda
+          </a>
         </li>
-
         <li class="nav-item">
-          <a class="nav-link" href="/logout">Çıkış Yapın</a>
+          <a class="nav-link text-white" href="/articles" style="transition: all 0.3s ease; padding: 0.5rem 1rem;">
+            Makaleler
+          </a>
         </li>
-
+        {% if session["logged_in"] %}
+        <li class="nav-item">
+          <a class="nav-link text-white" href="/dashboard" style="transition: all 0.3s ease; padding: 0.5rem 1rem;">
+            Kontrol Paneli
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="/logout" style="transition: all 0.3s ease; padding: 0.5rem 1rem;">
+            Çıkış Yapın
+          </a>
+        </li>
         {% else %}
         <li class="nav-item">
-          <a class="nav-link" href="/login">Giriş Yapın</a>
+          <a class="nav-link text-white" href="/login" style="transition: all 0.3s ease; padding: 0.5rem 1rem;">
+            Giriş Yapın
+          </a>
         </li>
+        <!-- If the user is not logged in, show the register link
         <li class="nav-item">
-          <a class="nav-link " href="/register">Kayıt Olun</a>
+          <a class="nav-link text-white" href="/register" style="transition: all 0.3s ease; padding: 0.5rem 1rem;">
+            Kayıt Olun
+          </a>
         </li>
+         -->
         {% endif %}
-
-
-
-
-
-
-
         <li class="nav-item">
-          <a class="nav-link " href="/follow_addresses">Takip edin</a>
+          <a class="nav-link text-white" href="/follow_addresses" style="transition: all 0.3s ease; padding: 0.5rem 1rem;">
+            Takip edin
+          </a>
         </li>
-
       </ul>
       <!-- Right side links end -->
-
-
-      <!--Search area unused -->
-      <!-- 
-      <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-light" type="submit">Search</button> 
-      </form>
-      -->
 
     </div>
   </div>
