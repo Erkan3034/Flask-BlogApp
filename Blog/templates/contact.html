@@ -1,0 +1,295 @@
+{% extends "layout.html" %}
+
+{% block contact %}
+<!-- DOMPurify kütüphanesi XSS koruması için -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.3.3/purify.min.js"></script>
+
+<style>
+  .contact-section {
+    padding: 60px 0;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  }
+
+  .contact-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1a2a44;
+    text-align: center;
+    margin-bottom: 40px;
+    position: relative;
+  }
+
+  .contact-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 4px;
+    background: #007bff;
+    border-radius: 2px;
+  }
+
+  .contact-card {
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .contact-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    background: #f8f9fa;
+  }
+
+  .contact-card .card-icon {
+    font-size: 2.5rem;
+    color: #007bff;
+    margin-bottom: 15px;
+    transition: transform 0.3s ease;
+  }
+
+  .contact-card:hover .card-icon {
+    transform: rotate(15deg) scale(1.1);
+  }
+
+  .card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1a2a44;
+    margin-bottom: 10px;
+  }
+
+  .card-text {
+    color: #6b7280;
+    font-size: 0.95rem;
+    margin-bottom: 15px;
+  }
+
+  .card-link {
+    position: relative;
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: transform 0.3s ease, color 0.3s ease;
+    padding: 5px 10px;
+    border-radius: 5px;
+    display: inline-block;
+  }
+
+  .card-link:hover {
+    color: #0056b3;
+    transform: scale(1.05);
+  }
+
+  /* Dalga efekti */
+  .card-link::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 123, 255, 0.2);
+    border-radius: 5px;
+    top: 0;
+    left: 0;
+    transform: scale(0);
+    transition: transform 0.3s ease-out;
+    z-index: -1;
+  }
+
+  .card-link:hover::before {
+    transform: scale(1);
+  }
+
+  /* İletişim Formu Stilleri */
+  .contact-form-container {
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    margin-top: 40px;
+  }
+
+  .form-label {
+    font-weight: 500;
+    color: #1a2a44;
+  }
+
+  .form-control, .form-control:focus {
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    box-shadow: none;
+    transition: border-color 0.3s ease;
+  }
+
+  .form-control:focus {
+    border-color: #007bff;
+  }
+
+  .btn-submit {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    color: white;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+
+  .btn-submit:hover {
+    background: linear-gradient(135deg, #0056b3 0%, #003d82 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+  }
+
+  .alert {
+    margin-top: 20px;
+    border-radius: 8px;
+  }
+
+  @media (max-width: 768px) {
+    .contact-title {
+      font-size: 2rem;
+    }
+    .contact-card {
+      margin-bottom: 20px;
+    }
+  }
+</style>
+
+<section class="contact-section">
+  <div class="container">
+    <h2 class="contact-title">Takip Edin</h2>
+    <div class="row">
+      <div class="col-12 col-md-6 col-lg-3 mb-4">
+        <div class="contact-card">
+          <i class="bi bi-github card-icon"></i>
+          <h5 class="card-title">GitHub</h5>
+          <p class="card-text">Kodlarım ve açık kaynak projelerim burada!</p>
+          <a href="https://github.com/erkanTrg" target="_blank" class="card-link">GitHub'a Git</a>
+        </div>
+      </div>
+      <div class="col-12 col-md-6 col-lg-3 mb-4">
+        <div class="contact-card">
+          <i class="bi bi-linkedin card-icon"></i>
+          <h5 class="card-title">LinkedIn</h5>
+          <p class="card-text">Profesyonel ağımda bana katıl!</p>
+          <a href="https://linkedin.com/in/erkanTrg" target="_blank" class="card-link">LinkedIn'e Bağlan</a>
+        </div>
+      </div>
+      <div class="col-12 col-md-6 col-lg-3 mb-4">
+        <div class="contact-card">
+          <i class="bi bi-medium card-icon"></i>
+          <h5 class="card-title">Medium</h5>
+          <p class="card-text">Makalelerim ve yazılarım için takip et!</p>
+          <a href="https://medium.com/@erkanTrg" target="_blank" class="card-link">Medium'da Oku</a>
+        </div>
+      </div>
+      <div class="col-12 col-md-6 col-lg-3 mb-4">
+        <div class="contact-card">
+          <i class="bi bi-twitter card-icon"></i>
+          <h5 class="card-title">Twitter</h5>
+          <p class="card-text">Güncel paylaşımlarımı kaçırma!</p>
+          <a href="https://twitter.com/erkanTrg" target="_blank" class="card-link">Twitter'da Takip Et</a>
+        </div>
+      </div>
+      <div class="col-12 col-md-6 col-lg-3 mb-4">
+        <div class="contact-card">
+          <i class="bi bi-instagram card-icon"></i>
+          <h5 class="card-title">Instagram</h5>
+          <p class="card-text">Hayatımın anlarını keşfet!</p>
+          <a href="https://instagram.com/erkanTrg" target="_blank" class="card-link">Instagram'da Gör</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- İletişim Formu -->
+    <div class="contact-form-container">
+      <h3 class="contact-title">Bana Ulaşın</h3>
+      <form id="contactForm" novalidate>
+        <div class="mb-3">
+          <label for="name" class="form-label">Adınız</label>
+          <input type="text" class="form-control" id="name" name="name" placeholder="Adınızı girin" required>
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">E-posta Adresiniz</label>
+          <input type="email" class="form-control" id="email" name="email" placeholder="ornek@eposta.com" required>
+        </div>
+        <div class="mb-3">
+          <label for="message" class="form-label">Mesajınız</label>
+          <textarea class="form-control" id="message" name="message" rows="5" placeholder="Mesajınızı yazın" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-submit">Gönder</button>
+      </form>
+      <div id="formResponse"></div>
+    </div>
+  </div>
+</section>
+
+<script>
+document.getElementById('contactForm').addEventListener('submit', function(event) {
+  event.preventDefault();
+
+  // Form verilerini al
+  const name = DOMPurify.sanitize(document.getElementById('name').value.trim());
+  const email = DOMPurify.sanitize(document.getElementById('email').value.trim());
+  const message = DOMPurify.sanitize(document.getElementById('message').value.trim());
+
+  // Temel doğrulama
+  if (!name || !email || !message) {
+    showResponse('Lütfen tüm alanları doldurun.', 'danger');
+    return;
+  }
+
+  // E-posta format kontrolü
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailPattern.test(email)) {
+    showResponse('Geçerli bir e-posta adresi girin.', 'danger');
+    return;
+  }
+
+  // Formspree API'sine gönder
+  const formData = new FormData();
+  formData.append('name', name);
+  formData.append('email', email);
+  formData.append('message', message);
+
+  fetch('https://formspree.io/f/mbloybdv', { // Buradaki {your-form-id}'yi Formspree'den aldığınız ID ile değiştirin
+    method: 'POST',
+    body: formData,
+    headers: {
+      'Accept': 'application/json'
+    }
+  })
+  .then(response => {
+    if (response.ok) {
+      showResponse('Mesajınız başarıyla gönderildi!', 'success');
+      document.getElementById('contactForm').reset();
+    } else {
+      throw new Error('Mesaj gönderilirken bir hata oluştu.');
+    }
+  })
+  .catch(error => {
+    showResponse(error.message, 'danger');
+  });
+});
+
+function showResponse(message, type) {
+  const responseDiv = document.getElementById('formResponse');
+  responseDiv.innerHTML = `
+    <div class="alert alert-${type}" role="alert">
+      ${message}
+    </div>
+  `;
+  setTimeout(() => responseDiv.innerHTML = '', 5000);
+}
+</script>
+{% endblock contact %}
