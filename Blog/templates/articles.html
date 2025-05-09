@@ -2,96 +2,251 @@
 
 {% block articles %}
 <style>
-.search-container {
-    position: relative;
-}
+  .search-container {
+    background-color: white;
+    border-radius: 50px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    max-width: 500px;
+    width: 100%;
+    transition: all 0.3s ease;
+  }
 
-.search-input {
-    height: 50px;
-    border-radius: 30px;
-    padding-left: 35px;
+  .search-container:hover {
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+  }
+
+  .form-control.search-input {
     border: none;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+    background: transparent;
+    padding-left: 20px;
+    font-size: 1rem;
+    height: 50px;
+  }
 
-.search-icon {
+  .form-control.search-input:focus {
+    box-shadow: none;
+    outline: none;
+  }
+
+  .btn-search {
+    background-color: #007bff;
+    color: white;
+    border-radius: 50px;
+    padding: 10px 20px;
+    border: none;
+    transition: all 0.3s ease;
+  }
+
+  .btn-search:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+  }
+
+  .search-icon {
+    color: #6c757d;
     position: absolute;
-    top: 50%;
     left: 15px;
+    top: 50%;
     transform: translateY(-50%);
-    color: #333;
-}
+  }
+
+  .section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1a2a44;
+    letter-spacing: -0.5px;
+    position: relative;
+    padding-bottom: 15px;
+  }
+
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: #007bff;
+    border-radius: 2px;
+  }
+
+  .article-card {
+    border: none;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    height: 100%;
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    /* İçeriğin taşmasını önler */
+  }
+
+  .article-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  }
+
+  .article-card .card-body {
+    padding: 24px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .article-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1a2a44;
+    margin-bottom: 12px;
+    word-wrap: break-word;
+    /* Uzun başlıklar için */
+  }
+
+  .article-text {
+    font-size: 1rem;
+    color: #4a5568;
+    line-height: 1.6;
+    margin-bottom: 16px;
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    /* Maksimum 4 satır */
+    -webkit-box-orient: vertical;
+  }
+
+  .article-meta {
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin-bottom: 16px;
+  }
+
+  .btn-read-more {
+    background: #007bff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    align-self: flex-end;
+    width: fit-content;
+  }
+
+  .btn-read-more:hover {
+    background: #0056b3;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+  }
+
+  .no-articles {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 32px;
+    text-align: center;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  }
+
+  .no-articles h4 {
+    color: #1a2a44;
+    font-weight: 600;
+  }
+
+  .no-articles p {
+    color: #6b7280;
+    font-size: 1.1rem;
+  }
+
+  @media (max-width: 576px) {
+    .article-card {
+      min-height: 300px;
+    }
+
+    .section-title {
+      font-size: 2rem;
+    }
+
+    .search-container {
+      max-width: 100%;
+    }
+  }
+
+  @media (min-width: 576px) and (max-width: 767px) {
+    .col-sm-6 {
+      flex: 0 0 50%;
+      max-width: 50%;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .col-md-4 {
+      flex: 0 0 33.333%;
+      max-width: 33.333%;
+    }
+  }
 </style>
+
 <section class="py-5 bg-light">
   <div class="container">
-    <h1 class="text-center fw-bold mb-5" style="color: #003087;">Blog Yazıları</h1>
+    <h1 class="section-title text-center mb-5">Blog Yazıları</h1>
     <div class="container">
-      <!--search bar -->
-     <div class="row justify-content-center">
-       <div class="col-md-6">
-         <div class="search-container">
-           <input type="text" class="form-control search-input" placeholder="Makale Ara...">
-             <i class="fas fa-search search-icon"></i>
+      <!-- Search Bar -->
+        <div class="row justify-content-center mb-5">
+          <div class="col-12 col-md-6 col-lg-4">
+            <div class="search-container position-relative">
+              <form class="d-flex align-items-center" action="/search" method="POST">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  class="search-icon feather feather-search">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input class="form-control search-input ps-5" name="keyword" type="search" placeholder="Makale ara..."
+                  aria-label="Search">
+                <button class="btn btn-search ms-2" type="submit">Ara</button>
+              </form>
+            </div>
           </div>
         </div>
-     </div>
-     <!--search bar end -->
-</div>
-    <hr class="w-50 mx-auto mb-5" style="border-color: #007BFF;">
+
+
+      <!-- Search Bar End -->
+    </div>
 
     {% if articles %}
-      <!-- Blog Post Area -->
-      <ul class="list-group shadow-sm bg-white rounded-3">
-        {% for article in articles %}
-          <li class="list-group-item border-0 mb-3">
-            <div class="card h-100 shadow transition-hover" style="border: 1px solid #E3F2FD;">
-              <div class="card-body">
-                <h5 class="card-title fw-bold" style="color: #003087;">{{ article.title }}</h5>
-                <p class="card-text text-muted">{{ article.content|truncate(200) }}</p>
-                <div class="d-flex justify-content-between align-items-center mt-3">
-                  <small class="text-muted">
-                    {% if article.created_date %}
-                      {{ article.created_date.strftime('%d %b %Y') }}
-                    {% endif %}
-                    {% if article.author %}
-                      | {{ article.author }}
-                    {% endif %}
-                  </small>
-                  <a href="/article/{{article.id}}" class="btn btn-primary btn-sm fw-medium" style="background-color: #007BFF; border-color: #007BFF;">Devamını Oku</a>
-                </div>
-              </div>
-            </div>
-          </li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <div class="alert alert-info text-center rounded-3 shadow-sm" role="alert" style="background-color: #E3F2FD; border-color: #BBDEFB;">
-        <h4 class="fw-bold mb-0" style="color: #003087;">Henüz Makale Eklenmemiş</h4>
-        <p class="mt-2 mb-0">Blog yazıları yakında burada olacak!</p>
+    <!-- Blog Post Area -->
+    <div class="row">
+      {% for article in articles %}
+      <div class="col-12 col-sm-6 col-md-4 mb-4">
+        <div class="card article-card">
+          <div class="card-body">
+            <h5 class="article-title">{{ article.title }}</h5>
+            <p class="article-text">{{ article.content|truncate(150, True)|striptags|safe }}</p>
+            <small class="article-meta">
+              {% if article.created_date %}
+              {{ article.created_date.strftime('%d %b %Y') }}
+              {% endif %}
+              {% if article.author %}
+              | {{ article.author }}
+              {% endif %}
+            </small>
+            <a href="/article/{{article.id}}" class="btn btn-read-more">Devamını Oku</a>
+          </div>
+        </div>
       </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="no-articles">
+      <h4 class="mb-3">Henüz Makale Eklenmemiş</h4>
+      <p>Blog yazıları yakında burada olacak!</p>
+    </div>
     {% endif %}
   </div>
 </section>
-
-<style>
-  .transition-hover {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  .transition-hover:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 24px rgba(0, 123, 255, 0.15) !important;
-  }
-  .btn-primary:hover {
-    background-color: #005BC4;
-    border-color: #005BC4;
-    transform: scale(1.05);
-    transition: all 0.2s ease;
-  }
-  .card {
-    background-color: #FFFFFF;
-  }
-  .list-group {
-    background-color: transparent;
-  }
-</style>
 {% endblock articles %}

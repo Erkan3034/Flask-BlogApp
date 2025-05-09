@@ -13,6 +13,7 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles -->
     <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
@@ -105,36 +106,23 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.min.js" integrity="sha384-VQqxDN0EQCkWoxt/0vsQvZswzTHUVOImccYmSyhJTp7kGtPed0Qcx8rK9h9YEgx+" crossorigin="anonymous"></script>
     <!-- Custom JavaScript -->
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
-
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
 
   <!-- CKEditor 5 JS -->
-<script src="https://cdn.ckeditor.com/ckeditor5/45.0.0/ckeditor5.umd.js"></script>
-		<script>
-		const {
-			ClassicEditor,
-			Essentials,
-			Bold,
-			Italic,
-			Font,
-			Paragraph
-		} = CKEDITOR;
-
-		ClassicEditor
-			.create( document.querySelector( '#content' ), {
-				licenseKey: 'eyJhbGciOiJFUzI1NiJ9.eyJleHAiOjE3NDc4NzE5OTksImp0aSI6IjFiZGUwNzllLWM3YWYtNGJiOS1hODU2LWI3MzM1NDIzNDg4MSIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL3Byb3h5LWV2ZW50LmNrZWRpdG9yLmNvbSIsImRpc3RyaWJ1dGlvbkNoYW5uZWwiOlsiY2xvdWQiLCJkcnVwYWwiLCJzaCJdLCJ3aGl0ZUxhYmVsIjp0cnVlLCJsaWNlbnNlVHlwZSI6InRyaWFsIiwiZmVhdHVyZXMiOlsiKiJdLCJ2YyI6IjE4YjZhMWVjIn0.URImxNO9htpR5FTok6ST5En0nX0ZUxBHTu-KBS_R2crAvmyvV6etJQTYXsBD6ma8H5NKYOO2L27Sud60mMOvFQ', // Create a free account on https://portal.ckeditor.com/checkout?plan=free
-				plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
-				toolbar: [
-					'undo', 'redo', '|', 'bold', 'italic', '|',
-					'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
-				]
-			} )
-				.then( editor => {
-					window.editor = editor;
-				} )
-				.catch( error => {
-					console.error( error );
-				} );
-		</script>
+<script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+				<script>
+						CKEDITOR.replace( 'content' ,{
+                            allowedContent: true,
+                            toolbar: [
+                                { name: 'document', items: [ 'Source', '-', 'Save', 'NewPage', 'Preview', 'Print' ] },
+                                { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'Undo', 'Redo' ] },
+                                { name: 'editing', items: [ 'Find', 'Replace' ] },
+                                { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline' ] },
+                                { name: 'paragraph', items: [ 'NumberedList', 'BulletedList' ] },
+                                { name: 'insert', items: [ 'Image', 'Table' ] }
+                            ]
+                        });
+				</script>
 
 
     {% block extra_js %}{% endblock %}

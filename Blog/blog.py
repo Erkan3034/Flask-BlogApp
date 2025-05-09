@@ -302,5 +302,26 @@ def update(id):
 
     
 
+#====================Arama URL==============================================================================================
+@app.route("/search", methods=["GET", "POST"])
+@login_required # Kullanıcı giriş yapmamışsa login_required decoratoru ile yönlendiriyoruz.
+def search():
+    if request.method == "POST":
+        keyword = request.form.get("keyword")
+        cursor = mysql.connection.cursor()  
+        search_query = "SELECT * FROM articles WHERE title LIKE %s OR content LIKE %s"
+        search_result = cursor.execute(search_query, ('%' + keyword + '%', '%' + keyword + '%'))
+        if search_result > 0:
+            articles = cursor.fetchall()
+            articles_list = list(articles)
+            articles_list.sort(key=lambda x: x['id'], reverse=True)
+            return render_template("articles.html", articles=articles_list)
+        else:
+            flash("Aradığınız kelimeye uygun makale bulunamadı!", "danger")
+            return redirect(url_for("index"))
+            
+    elif request.method == "GET":
+        return redirect(url_for("index"))
+
 if __name__ == "__main__":
     app.run(debug=True)
