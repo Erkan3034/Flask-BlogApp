@@ -1,0 +1,61 @@
+{% extends 'layout.html' %}
+
+{% block main %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-body p-5">
+          <h2 class="fw-bold mb-4 text-center text-primary"><i class="bi bi-gear-fill me-2"></i>Site Yönetim Paneli</h2>
+          <p class="text-center text-muted mb-4">Sitenin tüm önemli bölümlerini buradan yönetebilirsiniz.</p>
+          <div class="row g-4">
+            <div class="col-md-6">
+              <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                  <i class="bi bi-menu-button-wide fs-1 text-primary mb-2"></i>
+                  <h5 class="fw-semibold">Navbar Linkleri</h5>
+                  <p class="text-muted">Menüdeki linkleri ekle, sil, güncelle.</p>
+                  <a href="#" class="btn btn-outline-primary btn-sm disabled">Yönet (Demo)</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                  <i class="bi bi-house-door fs-1 text-success mb-2"></i>
+                  <h5 class="fw-semibold">Ana Sayfa İçeriği</h5>
+                  <p class="text-muted">Ana sayfa başlık, açıklama ve öne çıkan içerikleri düzenle.</p>
+                  <a href="#" class="btn btn-outline-success btn-sm disabled">Yönet (Demo)</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                  <i class="bi bi-person-lines-fill fs-1 text-info mb-2"></i>
+                  <h5 class="fw-semibold">Hakkımda Sayfası</h5>
+                  <p class="text-muted">Hakkımda sayfası metnini ve görsellerini güncelle.</p>
+                  <a href="#" class="btn btn-outline-info btn-sm disabled">Yönet (Demo)</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                  <i class="bi bi-link-45deg fs-1 text-warning mb-2"></i>
+                  <h5 class="fw-semibold">Sosyal Medya & Footer</h5>
+                  <p class="text-muted">Sosyal medya ve footer bilgilerini düzenle.</p>
+                  <a href="#" class="btn btn-outline-warning btn-sm disabled">Yönet (Demo)</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="text-center mt-5">
+            <a href="/" class="btn btn-secondary"><i class="bi bi-arrow-left me-2"></i>Siteye Dön</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} 

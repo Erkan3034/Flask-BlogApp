@@ -1,0 +1,46 @@
+{% extends 'layout.html' %}
+
+{% block main %}
+<div class="container py-4">
+  <h2 class="mb-4">Onay Bekleyen Makaleler</h2>
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>ID</th>
+          <th>Başlık</th>
+          <th>Yazar</th>
+          <th>Tarih</th>
+          <th>Durum</th>
+          <th>İşlem</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for article in articles %}
+        <tr {% if not article.is_approved %}class="table-warning"{% endif %}>
+          <td>{{ article.id }}</td>
+          <td>{{ article.title }}</td>
+          <td>{{ article.author }}</td>
+          <td>{{ article.created_date.strftime('%d %b %Y') if article.created_date else '' }}</td>
+          <td>
+            {% if article.is_approved %}
+              <span class="badge bg-success">Onaylı</span>
+            {% else %}
+              <span class="badge bg-warning text-dark">Onay Bekliyor</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if not article.is_approved %}
+              <a href="{{ url_for('approve_article', article_id=article.id) }}" class="btn btn-success btn-sm">Onayla</a>
+              <a href="{{ url_for('reject_article', article_id=article.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Bu makaleyi silmek istediğinizden emin misiniz?')">Sil</a>
+            {% else %}
+              <span class="text-muted">-</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %} 

@@ -21,6 +21,21 @@
     <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/45.0.0/ckeditor5.css">
 
     {% block extra_css %}{% endblock %}
+
+    <style>
+          .footer a:hover {
+    color: #0d6efd !important;
+    transition: color 0.3s ease;
+  }
+
+  .footer i {
+    transition: transform 0.3s ease;
+  }
+
+  .footer i:hover {
+    transform: scale(1.2);
+  }
+    </style>
 </head>
 
 <body style="background-color: #F0F2F5; color: #212529;" class="d-flex flex-column min-vh-100">
@@ -94,12 +109,39 @@
         {% endblock %}
     </div>
 
-    <!-- Footer -->
-    <footer class="footer mt-auto py-3 bg-light">
-        <div class="container text-center">
-            <span class="text-muted">© 2025 Coder Erkan Blog. All rights reserved.</span>
+<!-- Footer -->
+<footer class="footer mt-auto py-4  text-light" style="background: linear-gradient(311deg, #4b6c93, #769ac5);box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+    <div class="container">
+      <div class="row text-center text-md-start align-items-center">
+        <div class="col-md-4 mb-3 mb-md-0">
+          <h5 class="fw-bold mb-2">Coder Erkan Blog</h5>
+          <p class="small text-muted">Yazılım, yapay zeka ve teknolojiyi paylaşan bir geliştirici platformu.</p>
         </div>
-    </footer>
+        <div class="col-md-4 mb-3 mb-md-0 text-center">
+          <a href="https://github.com/erkanTrg" class="text-light me-3" target="_blank">
+            <i class="bi bi-github fs-4"></i>
+          </a>
+          <a href="https://linkedin.com/in/erkanTrg" class="text-light me-3" target="_blank">
+            <i class="bi bi-linkedin fs-4"></i>
+          </a>
+          <a href="https://twitter.com/erkanTrg" class="text-light me-3" target="_blank">
+            <i class="bi bi-twitter fs-4"></i>
+          </a>
+          <a href="mailto:erkan@example.com" class="text-light" target="_blank">
+            <i class="bi bi-envelope fs-4"></i>
+          </a>
+        </div>
+        <div class="col-md-4 text-md-end text-center">
+          <p class="small text-muted mb-0">© 2025 Coder Erkan. Tüm hakları saklıdır.</p>
+          <p class="small text-muted mb-0">
+            <a href="/privacy-policy" class="text-muted text-decoration-none">Gizlilik Politikası</a> |
+            <a href="/contact" class="text-muted text-decoration-none">İletişim</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
+  
 
     <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"

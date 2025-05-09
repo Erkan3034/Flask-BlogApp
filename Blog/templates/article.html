@@ -1,84 +1,118 @@
 {% extends "layout.html" %}
 
 {% block article %}
-<!-- CSS Stiller -->
+<!-- Modern Article Detail CSS -->
 <style>
+    .article-cover {
+        width: 100%;
+        height: 260px;
+        object-fit: cover;
+        border-radius: 12px 12px 0 0;
+        margin-bottom: -2.5rem;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    }
     .article-card {
         border: none;
-        border-radius: 10px;
+        border-radius: 16px;
         overflow: hidden;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 8px 32px rgba(0, 123, 255, 0.10);
+        margin-top: 2rem;
     }
-    .article-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 12px 24px rgba(0, 123, 255, 0.15) !important;
-    }
-    .card-header {
-        background-color: #007BFF;
-        border-bottom: 3px solid #005BC4;
-    }
-    .card-title {
-        color: #FFFFFF;
-        font-weight: 700;
-    }
-    .card-body {
-        background-color: #FFFFFF;
-        padding: 2rem;
+    .article-title {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: #003087;
+        margin-bottom: 0.5rem;
     }
     .article-meta {
         color: #6C757D;
-        font-size: 0.95rem;
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+    }
+    .author-box {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
         margin-bottom: 1.5rem;
     }
+    .author-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #007BFF;
+    }
     .article-content {
-        line-height: 1.8;
-        color: #333;
-        font-size: 1.1rem;
+        line-height: 1.85;
+        color: #23272b;
+        font-size: 1.15rem;
+        margin-bottom: 2rem;
     }
-    .btn-secondary {
-        background-color: #6C757D;
-        border-color: #6C757D;
-        padding: 8px 16px;
-        font-weight: 500;
+    .article-tags {
+        margin-bottom: 1.5rem;
     }
-    .btn-secondary:hover {
-        background-color: #5A6268;
-        border-color: #5A6268;
-        transform: translateY(-2px);
-        transition: all 0.2s ease;
+    .article-tags .badge {
+        font-size: 0.95rem;
+        margin-right: 0.5rem;
+        background: #e3f2fd;
+        color: #007BFF;
+    }
+    .share-icons a {
+        color: #007BFF;
+        font-size: 1.3rem;
+        margin-right: 0.7rem;
+        transition: color 0.2s;
+    }
+    .share-icons a:hover {
+        color: #003087;
     }
     @media (max-width: 768px) {
-        .card-body {
-            padding: 1.5rem;
-        }
-        .article-content {
-            font-size: 1rem;
-        }
+        .article-title { font-size: 1.4rem; }
+        .article-content { font-size: 1rem; }
+        .article-cover { height: 160px; }
     }
 </style>
 
-<!-- Main Content -->
 <div class="container py-5">
     {% if article %}
         <div class="row justify-content-center">
             <div class="col-md-10 col-lg-8">
+                <!-- Kapak görseli -->
+                <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=900&q=80" class="article-cover mb-0" alt="Makale Kapak">
                 <div class="card article-card shadow-sm">
-                    <div class="card-header bg-primary text-white">
-                        <h3 class="card-title mb-0">{{ article.title }}</h3>
-                    </div>
-                    <div class="card-body">
-                        <p class="article-meta">
-                            {% if article.created_date %}
-                                {{ article.created_date.strftime('%d %b %Y') }}
-                            {% endif %}
-                            {% if article.author %}
-                                | {{ article.author }}
-                            {% endif %}
-                        </p>
+                    <div class="card-body pt-5">
+                        <h1 class="article-title">{{ article.title }}</h1>
+                        <div class="article-meta">
+                            <span><i class="bi bi-calendar-event"></i> {% if article.created_date %}{{ article.created_date.strftime('%d %b %Y') }}{% endif %}</span>
+                            <span><i class="bi bi-clock-history"></i> 3 dk. okuma</span>
+                        </div>
+                        <div class="author-box mb-3">
+                            <img src="https://randomuser.me/api/portraits/men/50.jpg" class="author-avatar" alt="Yazar">
+                            <div>
+                                <div class="fw-semibold">{{ article.author }}</div>
+                                <div class="text-muted" style="font-size:0.95rem;">Yazar</div>
+                            </div>
+                        </div>
+                        <!-- Etiketler örnek -->
+                        <div class="article-tags mb-3">
+                            <span class="badge">Python</span>
+                            <span class="badge">Web</span>
+                            <span class="badge">Geliştirme</span>
+                        </div>
                         <div class="article-content">
                             {{ article.content|safe }}
                         </div>
-                        <div class="text-end mt-4">
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <div class="share-icons">
+                                <span class="me-2 text-muted">Paylaş:</span>
+                                <a href="" title="Twitter"><i class="bi bi-twitter"></i></a>
+                                <a href="#" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                                <a href="#" title="Facebook"><i class="bi bi-facebook"></i></a>
+                            </div>
                             <a href="{{ url_for('articles') }}" class="btn btn-secondary shadow-sm">
                                 <i class="bi bi-arrow-left me-2"></i>Geri Dön
                             </a>

@@ -4,30 +4,68 @@
 {% block main %}
 
 <div class="rounded-3 p-4 shadow-sm bg-white">
-  <h1 class="text-center  fw-semibold">👋 Hoş Geldin!, {{session["username"]}}</h1>
-  <hr>
-  <p>Coder Erkan Blog'a Merhaba De! </p>
-  <p class="lead">
-    Yazılıma ilgi duyan herkesin kendine bir şeyler katabileceği, öğrenip uygulayabileceği ve ilham alabileceği bir
-    dünyaya hoş geldin.
-    <br>
-    Burada yazılım, yapay zeka, kişisel gelişim ve teknolojiyle ilgili özgün içerikler bulacaksın.
-    <br>
-    🧠 Yeni bilgiler öğren,<br>
-    💬 Düşüncelerini paylaş,<br>
-    🚀 Gelişimine katkı sağla! <br>
+  <div class="row align-items-center mb-4">
+    <div class="col-md-2 text-center mb-3 mb-md-0">
+      <img src="https://avatars.githubusercontent.com/u/9919?s=200&v=4" alt="Profile" class="rounded-circle img-fluid border border-3" style="width: 90px; height: 90px; object-fit: cover;">
+    </div>
+    <div class="col-md-7">
+      <h1 class="fw-bold mb-1">Erkan | <span class="text-primary">Full Stack Developer - AI & ML </span></h1>
+      <p class="text-muted mb-2">Yazılım, Yapay Zeka ve Teknoloji Tutkunu</p>
+      <p class="mb-0">Karmaşık problemleri çözmeyi, yeni teknolojiler öğrenmeyi ve öğrendiklerimi paylaşmayı seviyorum. Bu blogda yazılım dünyasındaki deneyimlerimi, projelerimi ve ilham aldığım konuları bulacaksınız.</p>
+    </div>
+    <div class="col-md-3 text-md-end text-center mt-3 mt-md-0">
+      <a href="#" class="text-dark me-2 fs-4" title="GitHub"><i class="bi bi-github"></i></a>
+      <a href="#" class="text-primary me-2 fs-4" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+      <a href="#" class="text-info fs-4" title="Twitter"><i class="bi bi-twitter"></i></a>
+    </div>
+  </div>
 
-    Sen de bu yolculuğun bir parçası olmak istiyorsan, içerikleri keşfetmeye başla!
-    Unutma, her büyük yazılımcı küçük bir "Hello World!" ile başladı. :
-  </p>
+  <div class="row g-4">
+    <div class="col-md-6">
+      <div class="card h-100 border-0 shadow-sm">
+        <div class="card-body">
+          <h3 class="h5 mb-3"><i class="bi bi-lightbulb text-warning"></i> Neler Yaparım?</h3>
+          <ul class="list-unstyled mb-0">
+            <li class="mb-2"><i class="bi bi-code-slash text-primary"></i> Full Stack Web Development</li>
+            <li class="mb-2"><i class="bi bi-cpu text-success"></i> AI & Machine Learning Projeleri</li>
+            <li class="mb-2"><i class="bi bi-git text-danger"></i> Open Source Katkıları</li>
+            <li><i class="bi bi-journal-text text-info"></i> Teknik Yazarlık & Eğitimler</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card h-100 border-0 shadow-sm">
+        <div class="card-body">
+          <h3 class="h5 mb-3"><i class="bi bi-tools text-secondary"></i> Kullandığım Teknolojiler</h3>
+          <div class="d-flex flex-wrap gap-2">
+            <span class="badge bg-primary">Python</span>
+            <span class="badge bg-primary">JavaScript</span>
+            <span class="badge bg-primary">React</span>
+            <span class="badge bg-primary">Node.js</span>
+            <span class="badge bg-primary">Flask</span>
+            <span class="badge bg-primary">SQL</span>
+            <span class="badge bg-primary">Docker</span>
+            <span class="badge bg-primary">Linux</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-<br>
 
 {% if session["logged_in"] %}
-<p class="text-success lead display-4">Blog yazılarımızı görmek için Makaleler sekmesini tıkla!</p>
+<div class="alert alert-success mt-4">
+  <h4 class="alert-heading">📚 Latest Articles</h4>
+  <p class="mb-0">Blog yazılarımı okumak için Makaleler sekmesini ziyaret edin!</p>
+</div>
 {% else %}
-<p class="text-success lead display-4">Blog yazılarımızı görmek için giriş yapın.</p>
+<div class="alert alert-info mt-4">
+  <h4 class="alert-heading">🔒 Giriş Yapın</h4>
+  <p class="mb-0">Blog yazılarımı okumak için lütfen giriş yapın.</p>
+</div>
 {% endif %}
+
 <!-- Koşul kullanımı
 {% if answer == 1 %}
 <p>Cevap 1</p>
@@ -62,11 +100,39 @@
 
 {% block aside %}
 <div class="p-3 bg-white rounded mb-3 shadow-sm">
-  <h5>Staff Picks</h5>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="mb-0">📌 Featured Posts</h5>
+    {% if is_admin %}
+    <a href="{{ url_for('add_article') }}" class="btn btn-sm btn-primary">Yeni Makale</a>
+    {% endif %}
+  </div>
   <ul class="list-unstyled">
-    <li><strong>I worked for Pope Francis</strong> <br /><small>Apr 22</small></li>
-    <li><strong>My Notes App</strong> <br /><small>Apr 17</small></li>
-    <li><strong>Our Souls Need Proof of Work</strong> <br /><small>Mar 10</small></li>
+    {% for article in featured_articles %}
+    <li class="mb-3">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          {% if session["logged_in"] %}
+            <a href="{{ url_for('article', article_id=article.id) }}" class="text-decoration-none">
+              <strong>{{ article.title }}</strong>
+              <br><small class="text-muted">{{ article.created_date.strftime('%d %b %Y') }}</small>
+            </a>
+          {% else %}
+            <a href="{{ url_for('login', next=url_for('article', article_id=article.id)) }}" class="text-decoration-none">
+              <strong>{{ article.title }}</strong>
+              <br><small class="text-muted">{{ article.created_date.strftime('%d %b %Y') }}</small>
+            </a>
+          {% endif %}
+        </div>
+        {% if is_admin %}
+        <div class="btn-group">
+          <a href="{{ url_for('update', id=article.id) }}" class="btn btn-sm btn-outline-primary">Düzenle</a>
+          <a href="{{ url_for('delete', id=article.id) }}" class="btn btn-sm btn-outline-danger" 
+             onclick="return confirm('Bu makaleyi silmek istediğinizden emin misiniz?')">Sil</a>
+        </div>
+        {% endif %}
+      </div>
+    </li>
+    {% endfor %}
   </ul>
 </div>
 {% endblock aside %}
@@ -76,10 +142,15 @@
 
 {% block asideTopics %}
 <div class="p-3 bg-white rounded shadow-sm">
-  <h5>Recommended topics</h5>
-  <span class="badge bg-primary">Programming</span>
-  <span class="badge bg-primary">Self Improvement</span>
-  <span class="badge bg-primary">Data Science</span>
+  <h5>🏷️ Popular Topics</h5>
+  <div class="d-flex flex-wrap gap-2">
+    <span class="badge bg-primary">Web Development</span>
+    <span class="badge bg-primary">Python</span>
+    <span class="badge bg-primary">JavaScript</span>
+    <span class="badge bg-primary">AI/ML</span>
+    <span class="badge bg-primary">DevOps</span>
+    <span class="badge bg-primary">Career Tips</span>
+  </div>
 </div>
 {% endblock %}
 

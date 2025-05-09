@@ -56,20 +56,25 @@ mysql = MySQL(app) # MySQL veritabanına bağlanmak için mysql nesnesi oluştur
 
 @app.route("/")
 def index():
-        # Kullanıcı oturumu kontrolü
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM articles WHERE is_approved = TRUE ORDER BY created_date DESC LIMIT 3")
+    featured_articles = cursor.fetchall()
+    is_admin = False
     if "logged_in" in session:
-        # Kullanıcı giriş yapmışsa, session'dan kullanıcı adını al
-        userName = session.get("username")
-        
-        #Kullanıcı giriş yapmışsa, veritabanından makaleleri al
-
-                
-        return render_template("index.html", username=userName)
-        
+        cursor.execute("SELECT is_admin FROM users WHERE username = %s", (session["username"],))
+        user = cursor.fetchone()
+        is_admin = user['is_admin'] if user else False
+    cursor.close()
+    if "logged_in" in session:
+        return render_template("index.html", 
+                             username=session["username"],
+                             featured_articles=featured_articles,
+                             is_admin=is_admin)
     else:
-        # Eğer kullanıcı giriş yapmamışsa, "Misafir" olarak göster
-        return render_template("index.html",username="Misafir" )
-    #return render_template("index.html" , answer=2)
+        return render_template("index.html",
+                             username="Misafir",
+                             featured_articles=featured_articles,
+                             is_admin=False)
 
 #====================About Islemleri===============================================================================================
 @app.route("/about")
@@ -80,18 +85,20 @@ def about():
 #Dinamic URL Yapısı
 # Flask, dinamik URL yapısını destekler. URL'de değişkenler kullanarak dinamik içerik oluşturabiliriz.
 @app.route("/article/<string:article_id>")
+@login_required  # Kullanıcı giriş yapmamışsa login_required decoratoru ile yönlendiriyoruz.
 def article(article_id):
     cursor = mysql.connection.cursor()
     result = cursor.execute("SELECT * FROM articles WHERE id = %s", (article_id,)) # article_id'ye göre makaleyi veritabanından alıyoruz.
     if result > 0:
         article = cursor.fetchone()
+        cursor.close()
         # Makaleyi render ediyoruz.
         return render_template("article.html", article=article)
     else:
         flash("Böyle bir makale bulunamadı!", "danger")
         cursor.close()
-        return redirect(url_for("index"))   
-    
+        return redirect(url_for("index"))
+
 
 
 #====================REGISTER Islemleri============================================================================================
@@ -135,6 +142,9 @@ def register():
 
 @app.route("/login" , methods=["GET" , "POST"])
 def login():
+    next_url = request.args.get("next")
+    if request.method == "GET" and next_url:
+        flash("Bu makaleyi okumak için önce giriş yapmalısınız!", "warning")
     if request.method == "POST":
         username = request.form.get("username") # Kullanıcı adı formdan alınıyor.
         password = request.form.get("password") # Şifre formdan alınıyor.
@@ -148,6 +158,8 @@ def login():
             session["logged_in"] = True # Kullanıcı giriş yapmış olarak işaretleniyor.
             session["username"] = username # Kullanıcı adı oturumda saklanıyor.
             flash("Giriş başarılı!", "success")
+            if next_url:
+                return redirect(next_url)
             return redirect(url_for("index"))
         else:
             flash("Kullanıcı adı veya şifre hatalı!", "danger")
@@ -167,23 +179,22 @@ def logout():
     
 #====================Kullanıcı Profil Islemleri====================================================================================
 @app.route("/dashboard")
-@login_required # Kullanıcı giriş yapmamışsa login_required decoratoru ile yönlendiriyoruz.
+@login_required
 def dashboard():
-        cursor = mysql.connection.cursor()
-        cursor.execute("SELECT * FROM articles WHERE author = %s", (session["username"],)) # Kullanıcı adı ile veritabanında arama yapıyoruz.
-        articles = cursor.fetchall() # Kullanıcı adı ile eşleşen verileri alıyoruz.
-        cursor.close() # Veritabanı bağlantısını kapatıyoruz.
-        if articles:
-            # Eğer makale varsa, veritabanından makaleleri alıyoruz.
-            articles_list = list(articles)
-            articles_list.sort(key=lambda x: x['id'], reverse=True)
-            # Makaleleri render ediyoruz.
-            return render_template("dashboard.html", articles=articles_list)
-        else:
-            # Eğer makale yoksa, boş bir liste döndürüyoruz.
-            articles = []
-            cursor.close()
-        return render_template("dashboard.html")
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT is_admin FROM users WHERE username = %s", (session["username"],))
+    user = cursor.fetchone()
+    is_admin = user['is_admin'] if user else False
+    # Kendi makaleleri
+    cursor.execute("SELECT * FROM articles WHERE author = %s ORDER BY id DESC", (session["username"],))
+    own_articles = cursor.fetchall()
+    # Admin ise diğer kullanıcıların makaleleri
+    other_articles = []
+    if is_admin:
+        cursor.execute("SELECT * FROM articles WHERE author != %s ORDER BY id DESC", (session["username"],))
+        other_articles = cursor.fetchall()
+    cursor.close()
+    return render_template("dashboard.html", articles=own_articles, other_articles=other_articles, is_admin=is_admin)
 
     
 
@@ -191,22 +202,19 @@ def dashboard():
 
 #====================Makale Ekleme Islemleri===============================================================================================
 @app.route("/addarticle", methods=["GET", "POST"])
-@login_required # Kullanıcı giriş yapmamışsa login_required decoratoru ile yönlendiriyoruz.
+@login_required
 def add_article():
-    form = ArticleForm(request.form) # Makale ekleme formunu oluşturuyoruz.
-    if request.method == "POST" and form.validate(): # Eğer form geçerli ise
-        # Formdan gelen verileri alıyoruz.
+    form = ArticleForm(request.form)
+    if request.method == "POST" and form.validate():
         title = form.title.data
         content = form.content.data
-        # Veritabanına makale ekleme işlemi
         cursor = mysql.connection.cursor()
-        cursor.execute("INSERT INTO articles(title,author, content) VALUES(%s,%s, %s)", (title,session["username"], content))
+        cursor.execute("INSERT INTO articles(title,author, content, is_approved) VALUES(%s,%s, %s, %s)", (title,session["username"], content, False))
         mysql.connection.commit()
         cursor.close()
-        flash("Makale başarıyla eklendi!", "success") # Başarılı ekleme mesajı gösteriyoruz.
-        return redirect(url_for("dashboard")) # Makale ekleme işlemi başarılı ise anasayfaya yönlendiriyoruz.
+        flash("Makaleniz başarıyla gönderildi. Admin onayından sonra yayınlanacaktır!", "info")
+        return redirect(url_for("dashboard"))
     else:
-        # Eğer form geçerli değilse veya GET isteği ise formu gösteriyoruz.
         if form.errors:
             for error in form.errors.values():
                 flash(error[0], "danger")
@@ -221,21 +229,16 @@ class ArticleForm(Form):
 
 
 @app.route("/articles")
-@login_required # Kullanıcı giriş yapmamışsa login_required decoratoru ile yönlendiriyoruz.
+@login_required
 def articles():
     cursor = mysql.connection.cursor()
-    result = cursor.execute("SELECT * FROM articles")
+    result = cursor.execute("SELECT * FROM articles WHERE is_approved = TRUE")
     if result > 0:
-        # Eğer makale varsa, veritabanından makaleleri alıyoruz.
         articles = cursor.fetchall()
-        # Makaleleri ters sırada sıralıyoruz (en son eklenen makale en üstte olacak şekilde)
         articles_list = list(articles)
         articles_list.sort(key=lambda x: x['id'], reverse=True)
-        # Makaleleri render ediyoruz.
-    
         return(render_template("articles.html" , articles=articles_list))
     else:
-        # Eğer makale yoksa, boş bir liste döndürüyoruz.
         articles = []
     cursor.close()
     return render_template("articles.html", articles=articles_list)
@@ -244,55 +247,70 @@ def articles():
 
 #====================Makale Silme Islemleri===============================================================================================
 @app.route("/delete/<string:id>")
-@login_required # Kullanıcı giriş yapmamışsa login_required decoratoru ile yönlendiriyoruz.
+@login_required
 def delete(id):
     cursor = mysql.connection.cursor()
-    query = "SELECT * FROM articles WHERE author = %s AND id = %s" # Makale id'sine göre makaleyi veritabanından siliyoruz.
-    result = cursor.execute(query,(session["username"],id)) # Makale id'sine göre makaleyi veritabanından siliyoruz.
-
-    if result > 0: #1 veya 0 dönmesi durumunda 
-        query2="DELETE FROM articles WHERE id = %s"# Makale id'sine göre makaleyi veritabanından siliyoruz.
-        cursor.execute(query2,(id,))
+    cursor.execute("SELECT is_admin FROM users WHERE username = %s", (session["username"],))
+    user = cursor.fetchone()
+    is_admin = user['is_admin'] if user else False
+    if is_admin:
+        query = "SELECT * FROM articles WHERE id = %s"
+        result = cursor.execute(query, (id,))
+    else:
+        query = "SELECT * FROM articles WHERE author = %s AND id = %s"
+        result = cursor.execute(query, (session["username"], id))
+    if result > 0:
+        query2 = "DELETE FROM articles WHERE id = %s"
+        cursor.execute(query2, (id,))
         mysql.connection.commit()
-        cursor.close()    
-        flash("Makale başarıyla silindi!", "success") # Başarılı silme mesajı gösteriyoruz.
-        return redirect(url_for("dashboard")) # Makale silme işlemi başarılı ise anasayfaya yönlendiriyoruz.
+        cursor.close()
+        flash("Makale başarıyla silindi!", "success")
+        return redirect(url_for("dashboard"))
     else:
         flash("Böyle bir makale bulunamadı veya yetkiniz yok!", "danger")
-        return redirect(url_for("index")) # Makale silme işlemi başarısız ise anasayfaya yönlendiriyoruz.
+        cursor.close()
+        return redirect(url_for("index"))
 
 
 #====================Makale Güncelleme Islemleri===============================================================================================
 @app.route("/edit/<string:id>", methods=["GET", "POST"])
-@login_required # Kullanıcı giriş yapmamışsa login_required decoratoru ile yönlendiriyoruz.
+@login_required
 def update(id):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT is_admin FROM users WHERE username = %s", (session["username"],))
+    user = cursor.fetchone()
+    is_admin = user['is_admin'] if user else False
     if request.method == "GET":
-
-        cursor = mysql.connection.cursor()
-        query3 = "SELECT * FROM articles WHERE author = %s AND id = %s" # Makale id'sine göre makaleyi veritabanından alıyoruz.
-        result = cursor.execute(query3 ,(session["username"],id)) # Makale id'sine göre makaleyi veritabanından alıyoruz.
+        if is_admin:
+            query3 = "SELECT * FROM articles WHERE id = %s"
+            result = cursor.execute(query3, (id,))
+        else:
+            query3 = "SELECT * FROM articles WHERE author = %s AND id = %s"
+            result = cursor.execute(query3, (session["username"], id))
         if result > 0:
             article = cursor.fetchone()
-            form = ArticleForm(request.form)    
+            form = ArticleForm(request.form)
             form.title.data = article["title"]
             form.content.data = article["content"]
+            cursor.close()
             return render_template("update.html", form=form)
         else:
-            flash("Böyle bir makale bulunamadı!", "danger")
+            flash("Böyle bir makale bulunamadı veya yetkiniz yok!", "danger")
             cursor.close()
             return redirect(url_for("index"))
-        # Eğer form geçerli değilse veya GET isteği ise formu gösteriyoruz.
     elif request.method == "POST":
-        cursor = mysql.connection.cursor()
         form = ArticleForm(request.form)
         new_title = form.title.data
         new_content = form.content.data
-        query4= "UPDATE articles SET title = %s, content = %s WHERE id = %s" # Makale id'sine göre makaleyi veritabanından güncelliyoruz.
-        cursor.execute(query4,(new_title, new_content, id))
-        mysql.connection.commit() # Veritabanına güncellemeleri kaydediyoruz.
+        if is_admin:
+            query4 = "UPDATE articles SET title = %s, content = %s WHERE id = %s"
+            cursor.execute(query4, (new_title, new_content, id))
+        else:
+            query4 = "UPDATE articles SET title = %s, content = %s WHERE author = %s AND id = %s"
+            cursor.execute(query4, (new_title, new_content, session["username"], id))
+        mysql.connection.commit()
         cursor.close()
         flash("Makale başarıyla güncellendi!", "success")
-        cursor.close()       
         return redirect(url_for("dashboard"))
     else:
         if form.errors: 
@@ -329,6 +347,64 @@ def search():
 @app.route("/contact")
 def contact():
     return render_template("contact.html")
+
+# 3. Admin paneli: Onay bekleyen makaleler
+@app.route("/admin/articles")
+@login_required
+def admin_articles():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT is_admin FROM users WHERE username = %s", (session["username"],))
+    user = cursor.fetchone()
+    if not user or not user['is_admin']:
+        flash("Bu sayfaya erişim yetkiniz yok!", "danger")
+        return redirect(url_for("index"))
+    cursor.execute("SELECT * FROM articles ORDER BY created_date DESC")
+    all_articles = cursor.fetchall()
+    cursor.close()
+    return render_template("admin_articles.html", articles=all_articles)
+
+# 4. Admin makale onaylama/ret
+@app.route("/admin/approve/<int:article_id>")
+@login_required
+def approve_article(article_id):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT is_admin FROM users WHERE username = %s", (session["username"],))
+    user = cursor.fetchone()
+    if not user or not user['is_admin']:
+        flash("Bu işlemi yapmaya yetkiniz yok!", "danger")
+        return redirect(url_for("index"))
+    cursor.execute("UPDATE articles SET is_approved = TRUE WHERE id = %s", (article_id,))
+    mysql.connection.commit()
+    cursor.close()
+    flash("Makale onaylandı!", "success")
+    return redirect(url_for("admin_articles"))
+
+@app.route("/admin/reject/<int:article_id>")
+@login_required
+def reject_article(article_id):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT is_admin FROM users WHERE username = %s", (session["username"],))
+    user = cursor.fetchone()
+    if not user or not user['is_admin']:
+        flash("Bu işlemi yapmaya yetkiniz yok!", "danger")
+        return redirect(url_for("index"))
+    cursor.execute("DELETE FROM articles WHERE id = %s", (article_id,))
+    mysql.connection.commit()
+    cursor.close()
+    flash("Makale silindi!", "info")
+    return redirect(url_for("admin_articles"))
+
+@app.route('/admin-panel')
+@login_required
+def admin_panel():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT is_admin FROM users WHERE username = %s", (session["username"],))
+    user = cursor.fetchone()
+    if not user or not user['is_admin']:
+        flash("Bu sayfaya erişim yetkiniz yok!", "danger")
+        return redirect(url_for("index"))
+    cursor.close()
+    return render_template("admin_panel.html")
 
 if __name__ == "__main__":
     app.run(debug=True)

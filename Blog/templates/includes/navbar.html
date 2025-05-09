@@ -29,6 +29,13 @@
             Kontrol Paneli
           </a>
         </li>
+        {% if is_admin %}
+        <li class="nav-item">
+          <a class="nav-link text-warning fw-bold" href="{{ url_for('admin_articles') }}" style="transition: all 0.3s ease; padding: 0.5rem 1rem;">
+            Onay Bekleyen Makaleler
+          </a>
+        </li>
+        {% endif %}
         <li class="nav-item">
           <a class="nav-link text-white" href="/logout" style="transition: all 0.3s ease; padding: 0.5rem 1rem;">
             Çıkış Yapın
