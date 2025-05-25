@@ -51,16 +51,28 @@ app.config['MYSQL_USER'] = os.getenv('MYSQL_USER')
 app.config['MYSQL_PASSWORD'] = os.getenv('MYSQL_PASSWORD')
 app.config['MYSQL_DB'] = os.getenv('MYSQL_DB')
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
-# Add these new configurations
 app.config['MYSQL_PORT'] = int(os.getenv('MYSQL_PORT', 3306))
 app.config['MYSQL_CONNECT_TIMEOUT'] = 10
-app.config['MYSQL_SSL_MODE'] = 'VERIFY_IDENTITY'
+# FreeSQLDatabase için basitleştirilmiş SSL ayarları
+app.config['MYSQL_SSL_MODE'] = 'DISABLED'  # SSL'i devre dışı bırak
 
 mysql = MySQL(app) # MySQL veritabanına bağlanmak için mysql nesnesi oluşturuyoruz.
 
 # Test database connection with better error handling
 try:
     with app.app_context():
+        # Önce bağlantı bilgilerini kontrol et
+        if not all([app.config['MYSQL_HOST'], app.config['MYSQL_USER'], app.config['MYSQL_PASSWORD'], app.config['MYSQL_DB']]):
+            missing = []
+            if not app.config['MYSQL_HOST']: missing.append('MYSQL_HOST')
+            if not app.config['MYSQL_USER']: missing.append('MYSQL_USER')
+            if not app.config['MYSQL_PASSWORD']: missing.append('MYSQL_PASSWORD')
+            if not app.config['MYSQL_DB']: missing.append('MYSQL_DB')
+            raise ValueError(f"Missing required environment variables: {', '.join(missing)}")
+            
+        print("Attempting to connect to database...")
+        print(f"Connection details: HOST={app.config['MYSQL_HOST']}, DB={app.config['MYSQL_DB']}, USER={app.config['MYSQL_USER']}, PORT={app.config['MYSQL_PORT']}")
+        
         cursor = mysql.connection.cursor()
         cursor.execute('SELECT 1')
         print("Database connection successful!")
@@ -68,9 +80,8 @@ try:
 except Exception as e:
     print("Database connection failed!")
     print(f"Error: {str(e)}")
-    print(f"Database config: HOST={app.config['MYSQL_HOST']}, DB={app.config['MYSQL_DB']}, USER={app.config['MYSQL_USER']}, PORT={app.config['MYSQL_PORT']}")
     print("Please check if:")
-    print("1. MYSQL_PASSWORD environment variable is set")
+    print("1. All environment variables are set correctly")
     print("2. Database server is running and accessible")
     print("3. IP address is whitelisted in database settings")
     print("4. Database credentials are correct")
