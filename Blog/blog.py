@@ -39,8 +39,8 @@ class RegisterForm(Form):
 app = Flask(__name__)
 
 
-# Ortam değişkeninden alın veya rastgele bir değer üretin
-app.secret_key = os.environ.get('SECRET_KEY') or os.urandom(24)
+# Secret key from environment variables
+app.secret_key = os.getenv('SECRET_KEY')
 
 #====================DB baglantı islemleri ===============================================================================================
 #==================== DB bağlantı ayarları ====================
@@ -127,9 +127,10 @@ def register():
             return render_template("register.html", form=form)
         else:
             cursor = mysql.connection.cursor() # MySQL veritabanına bağlanıyoruz.
-            cursor.execute("INSERT INTO users(name, username, email, password) VALUES(%s, %s, %s, %s)", (name, username, email, password))
+            cursor.execute("INSERT INTO users(name, userName, email, password) VALUES(%s, %s, %s, %s)", (name, username, email, password))
             mysql.connection.commit()
             cursor.close() # Veritabanı bağlantısını kapatıyoruz.
+            
             if cursor.execute:
                 flash("Kayıt işlemi başarılı!", "success")
             else:
@@ -408,5 +409,7 @@ def admin_panel():
     cursor.close()
     return render_template("admin_panel.html")
 
+port = int(os.environ.get("PORT", 5000))
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=port, debug=False)
