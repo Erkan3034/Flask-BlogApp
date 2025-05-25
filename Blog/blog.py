@@ -49,11 +49,16 @@ load_dotenv()  # .env dosyasını oku
 app.config['MYSQL_HOST'] = os.getenv('MYSQL_HOST')
 app.config['MYSQL_USER'] = os.getenv('MYSQL_USER')
 app.config['MYSQL_PASSWORD'] = os.getenv('MYSQL_PASSWORD')
-app.config['MYSQL_DB'] = os.getenv('MYSQL_DB')                       # Veritabanı ismi
-app.config['MYSQL_CURSORCLASS'] = 'DictCursor'              # Sonuçları sözlük olarak döndürsün
+app.config['MYSQL_DB'] = os.getenv('MYSQL_DB')
+app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+# Add these new configurations
+app.config['MYSQL_PORT'] = int(os.getenv('MYSQL_PORT', 3306))
+app.config['MYSQL_CONNECT_TIMEOUT'] = 10
+app.config['MYSQL_SSL_MODE'] = 'VERIFY_IDENTITY'
+
 mysql = MySQL(app) # MySQL veritabanına bağlanmak için mysql nesnesi oluşturuyoruz.
 
-# Test database connection
+# Test database connection with better error handling
 try:
     with app.app_context():
         cursor = mysql.connection.cursor()
@@ -63,7 +68,12 @@ try:
 except Exception as e:
     print("Database connection failed!")
     print(f"Error: {str(e)}")
-    print(f"Database config: HOST={app.config['MYSQL_HOST']}, DB={app.config['MYSQL_DB']}, USER={app.config['MYSQL_USER']}")
+    print(f"Database config: HOST={app.config['MYSQL_HOST']}, DB={app.config['MYSQL_DB']}, USER={app.config['MYSQL_USER']}, PORT={app.config['MYSQL_PORT']}")
+    print("Please check if:")
+    print("1. MYSQL_PASSWORD environment variable is set")
+    print("2. Database server is running and accessible")
+    print("3. IP address is whitelisted in database settings")
+    print("4. Database credentials are correct")
 
 
 
