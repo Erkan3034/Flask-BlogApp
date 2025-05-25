@@ -53,6 +53,19 @@ app.config['MYSQL_DB'] = os.getenv('MYSQL_DB')                       # Veritaban
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'              # Sonuçları sözlük olarak döndürsün
 mysql = MySQL(app) # MySQL veritabanına bağlanmak için mysql nesnesi oluşturuyoruz.
 
+# Test database connection
+try:
+    with app.app_context():
+        cursor = mysql.connection.cursor()
+        cursor.execute('SELECT 1')
+        print("Database connection successful!")
+        cursor.close()
+except Exception as e:
+    print("Database connection failed!")
+    print(f"Error: {str(e)}")
+    print(f"Database config: HOST={app.config['MYSQL_HOST']}, DB={app.config['MYSQL_DB']}, USER={app.config['MYSQL_USER']}")
+
+
 
 #====================Anasayfa Islemleri===============================================================================================
 
