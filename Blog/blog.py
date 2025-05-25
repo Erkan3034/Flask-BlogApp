@@ -7,7 +7,7 @@ import os # Ortam değişkenlerini kullanmak için os kütüphanesini kullanıyo
 import time # Zaman işlemleri için time kütüphanesini kullanıyoruz.
 import email_validator # email_validator kütüphanesi ile email doğrulama işlemi yapacağız.
 
-
+from dotenv import load_dotenv
 
 #====================Kullanıcı giirş decoratoru========================================================================================
 def login_required(f):
@@ -43,12 +43,14 @@ app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY') or os.urandom(24)
 
 #====================DB baglantı islemleri ===============================================================================================
+#==================== DB bağlantı ayarları ====================
+load_dotenv()  # .env dosyasını oku
 
-app.config['MYSQL_HOST'] = 'localhost' # MySQL sunucusunun adresi
-app.config['MYSQL_USER'] = 'root' # MySQL kullanıcı adı
-app.config['MYSQL_PASSWORD'] = 'Erkan1205/*-+' # MySQL şifresi
-app.config['MYSQL_DB'] = 'coder_erkan_blog' # MySQL veritabanı adı
-app.config['MYSQL_CURSORCLASS'] = 'DictCursor' # MySQL veritabanına bağlanmak için kullanılacak cursor sınıfı
+app.config['MYSQL_HOST'] = os.getenv('MYSQL_HOST')
+app.config['MYSQL_USER'] = os.getenv('MYSQL_USER')
+app.config['MYSQL_PASSWORD'] = os.getenv('MYSQL_PASSWORD')
+app.config['MYSQL_DB'] = os.getenv('MYSQL_DB')                       # Veritabanı ismi
+app.config['MYSQL_CURSORCLASS'] = 'DictCursor'              # Sonuçları sözlük olarak döndürsün
 mysql = MySQL(app) # MySQL veritabanına bağlanmak için mysql nesnesi oluşturuyoruz.
 
 
