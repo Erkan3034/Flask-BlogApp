@@ -2,72 +2,123 @@
 
 <!-- Main Content Start-->
 {% block main %}
-
-<div class="rounded-3 p-4 shadow-sm bg-white">
-  <div class="row align-items-center mb-4">
-    <div class="col-md-2 text-center mb-3 mb-md-0">
-      <img src="https://avatars.githubusercontent.com/u/9919?s=200&v=4" alt="Profile" class="rounded-circle img-fluid border border-3" style="width: 90px; height: 90px; object-fit: cover;">
-    </div>
-    <div class="col-md-7">
-      <h1 class="fw-bold mb-1">Erkan | <span class="text-primary">Full Stack Developer - AI & ML </span></h1>
-      <p class="text-muted mb-2">Yazılım, Yapay Zeka ve Teknoloji Tutkunu</p>
-      <p class="mb-0">Karmaşık problemleri çözmeyi, yeni teknolojiler öğrenmeyi ve öğrendiklerimi paylaşmayı seviyorum. Bu blogda yazılım dünyasındaki deneyimlerimi, projelerimi ve ilham aldığım konuları bulacaksınız.</p>
-    </div>
-    <div class="col-md-3 text-md-end text-center mt-3 mt-md-0">
-      <a href="https://github.com/Erkan3034" class="text-dark me-2 fs-4" title="GitHub"><i class="bi bi-github"></i></a>
-      <a href="https://www.linkedin.com/in/erkanturgut1205" class="text-primary me-2 fs-4" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
-      <a href="https://x.com/Erkan_0630" class="text-info fs-4" title="Twitter"><i class="bi bi-twitter"></i></a>
-    </div>
-  </div>
-
-  <div class="row g-4">
-    <div class="col-md-6">
-      <div class="card h-100 border-0 shadow-sm">
-        <div class="card-body">
-          <h3 class="h5 mb-3"><i class="bi bi-lightbulb text-warning"></i> Neler Yaparım?</h3>
-          <ul class="list-unstyled mb-0">
-            <li class="mb-2"><i class="bi bi-code-slash text-primary"></i> Full Stack Web Development</li>
-            <li class="mb-2"><i class="bi bi-cpu text-success"></i> AI & Machine Learning Projeleri</li>
-            <li class="mb-2"><i class="bi bi-git text-danger"></i> Open Source Katkıları</li>
-            <li><i class="bi bi-journal-text text-info"></i> Teknik Yazarlık & Eğitimler</li>
-          </ul>
+<!-- Hero Section -->
+<div class="bg-gradient-hero text-white rounded-4 p-5 mb-4 shadow-lg">
+    <div class="row align-items-center gy-4">
+        <div class="col-lg-8 col-12 text-center text-lg-start">
+            <h1 class="display-4 fw-bold mb-3 text-light-emphasis">Erkan Turgut</h1>
+            <h2 class="h4 mb-4 text-light-emphasis">Full Stack Developer & AI Enthusiast</h2>
+            <p class="lead mb-4 text-dark">Yazılım dünyasındaki deneyimlerimi, projelerimi ve teknoloji tutkumu bu blogda paylaşıyorum. Modern teknolojiler, yapay zeka ve web geliştirme konularında içerikler bulabilirsiniz.</p>
+            <div class="d-flex flex-column flex-sm-row justify-content-center justify-content-lg-start gap-3 text-dark">
+                <a href="https://github.com/Erkan3034" class="btn btn-light btn-lg" target="_blank">
+                    <i class="bi bi-github me-2"></i>GitHub
+                </a>
+                <a href="https://www.linkedin.com/in/erkanturgut1205" class="btn btn-light btn-lg" target="_blank">
+                    <i class="bi bi-linkedin me-2"></i>LinkedIn
+                </a>
+            </div>
         </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card h-100 border-0 shadow-sm">
-        <div class="card-body">
-          <h3 class="h5 mb-3"><i class="bi bi-tools text-secondary"></i> Kullandığım Teknolojiler</h3>
-          <div class="d-flex flex-wrap gap-2">
-            <span class="badge bg-primary">Python</span>
-            <span class="badge bg-primary">JavaScript</span>
-            <span class="badge bg-primary">Java</span>
-            <span class="badge bg-primary">Node.js</span>
-            <span class="badge bg-primary">Flask</span>
-            <span class="badge bg-primary">SQL</span>
-            <span class="badge bg-primary">Django</span>
-            <span class="badge bg-primary">C#</span>
-          </div>
+        <div class="col-lg-4 col-12 text-center">
+            <img src="https://avatars.githubusercontent.com/u/9919?s=200&v=4" alt="Profile" class="rounded-circle img-fluid border border-4 border-white shadow-lg mx-auto" style="width: 180px; height: 180px; object-fit: cover;">
         </div>
-      </div>
     </div>
-  </div>
 </div>
 
+<!-- Skills & Technologies Section -->
+<div class="row g-4 mb-4">
+    <!-- Expertise Card -->
+    <div class="col-md-6">
+        <div class="card h-100 border-0 shadow-sm hover-shadow">
+            <div class="card-body p-4">
+                <h3 class="h4 mb-4 d-flex align-items-center">
+                    <i class="bi bi-stars text-warning me-2"></i> Uzmanlık / Çalışma Alanlarım
+                </h3>
+                <div class="row g-3">
+                    <div class="col-6">
+                        <div class="d-flex align-items-center p-3 bg-light rounded-3">
+                            <i class="bi bi-code-square text-primary fs-4 me-3"></i>
+                            <div>
+                                <h6 class="mb-0">Web Development</h6>
+                                <small class="text-muted">Full Stack</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex align-items-center p-3 bg-light rounded-3">
+                            <i class="bi bi-cpu text-success fs-4 me-3"></i>
+                            <div>
+                                <h6 class="mb-0">AI & ML</h6>
+                                <small class="text-muted">Projeler</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex align-items-center p-3 bg-light rounded-3">
+                            <i class="bi bi-git text-danger fs-4 me-3"></i>
+                            <div>
+                                <h6 class="mb-0">Open Source</h6>
+                                <small class="text-muted">Katkılar</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex align-items-center p-3 bg-light rounded-3">
+                            <i class="bi bi-journal-code text-info fs-4 me-3"></i>
+                            <div>
+                                <h6 class="mb-0">Teknik Yazarlık</h6>
+                                <small class="text-muted">Eğitimler</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Technologies Card -->
+    <div class="col-md-6">
+        <div class="card h-100 border-0 shadow-sm hover-shadow">
+            <div class="card-body p-4">
+                <h3 class="h4 mb-4 d-flex align-items-center">
+                    <i class="bi bi-tools text-primary me-2"></i> Tech Stack
+                </h3>
+                <div class="d-flex flex-wrap gap-2">
+                    <span class="badge bg-primary-subtle text-primary p-2">Python</span>
+                    <span class="badge bg-primary-subtle text-primary p-2">JavaScript</span>
+                    <span class="badge bg-primary-subtle text-primary p-2">Java</span>
+                    <span class="badge bg-primary-subtle text-primary p-2">Node.js</span>
+                    <span class="badge bg-primary-subtle text-primary p-2">Flask</span>
+                    <span class="badge bg-primary-subtle text-primary p-2">SQL</span>
+                    <span class="badge bg-primary-subtle text-primary p-2">Django</span>
+                    <span class="badge bg-primary-subtle text-primary p-2">C#</span>
+                    <span class="badge bg-primary-subtle text-primary p-2">React</span>
+                    <span class="badge bg-primary-subtle text-primary p-2">Docker</span>
+                    <span class="badge bg-primary-subtle text-primary p-2">Git</span>
+                    <span class="badge bg-primary-subtle text-primary p-2">AWS</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Login Alert Section -->
 {% if session["logged_in"] %}
-<div class="alert alert-success mt-4">
-  <h4 class="alert-heading">📚 Latest Articles</h4>
-  <p class="mb-0">Blog yazılarımı okumak için Makaleler sekmesini ziyaret edin!</p>
+<div class="alert alert-success d-flex align-items-center p-4 rounded-4 shadow-sm mb-4" role="alert">
+    <i class="bi bi-book fs-3 me-3"></i>
+    <div>
+        <h4 class="alert-heading mb-1">📚 Son Makaleler</h4>
+        <p class="mb-0">En son blog yazılarımı okumak için Makaleler sekmesini ziyaret edin!</p>
+    </div>
 </div>
 {% else %}
-<div class="alert alert-info mt-4">
-  <h4 class="alert-heading">🔒 Giriş Yapın</h4>
-  <p class="mb-0">Blog yazılarımı okumak için lütfen giriş yapın.</p>
+<div class="alert alert-info d-flex align-items-center p-4 rounded-4 shadow-sm mb-4" role="alert">
+    <i class="bi bi-lock fs-3 me-3"></i>
+    <div>
+        <h4 class="alert-heading mb-1">🔒 Giriş Yapın</h4>
+        <p class="mb-0">Blog yazılarımı okumak için lütfen giriş yapın veya kayıt olun.</p>
+    </div>
 </div>
-{% endif %}
-
-
-{% endblock main %}
+{% endif %} {% endblock main %}
 <!-- Main Content End-->
 
 
@@ -76,59 +127,272 @@
 <!-- Aside Content Start-->
 
 {% block aside %}
-<div class="p-3 bg-white rounded mb-3 shadow-sm">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h5 class="mb-0">📌 Öne Çıkan Gönderiler</h5>
-    {% if is_admin %}
-    <a href="{{ url_for('add_article') }}" class="btn btn-sm btn-primary">Yeni Makale</a>
-    {% endif %}
-  </div>
-  <ul class="list-unstyled">
-    {% for article in featured_articles %}
-    <li class="mb-3">
-      <div class="d-flex justify-content-between align-items-start">
-        <div>
-          {% if session["logged_in"] %}
-            <a href="{{ url_for('article', article_id=article.id) }}" class="text-decoration-none">
-              <strong>{{ article.title }}</strong>
-              <br><small class="text-muted">{{ article.created_date.strftime('%d %b %Y') }}</small>
+<!-- Featured Posts Card -->
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="card-title mb-0 d-flex align-items-center">
+                <i class="bi bi-bookmark-star-fill text-warning me-2"></i> Öne Çıkan Makaleler
+            </h5>
+            {% if is_admin %}
+            <a href="{{ url_for('add_article') }}" class="btn btn-primary btn-sm">
+                <i class="bi bi-plus-lg me-1"></i>Yeni Makale
             </a>
-          {% else %}
-            <a href="{{ url_for('login', next=url_for('article', article_id=article.id)) }}" class="text-decoration-none">
-              <strong>{{ article.title }}</strong>
-              <br><small class="text-muted">{{ article.created_date.strftime('%d %b %Y') }}</small>
-            </a>
-          {% endif %}
+            {% endif %}
         </div>
-        {% if is_admin %}
-        <div class="btn-group">
-          <a href="{{ url_for('update', id=article.id) }}" class="btn btn-sm btn-outline-primary">Düzenle</a>
-          <a href="{{ url_for('delete', id=article.id) }}" class="btn btn-sm btn-outline-danger" 
-             onclick="return confirm('Bu makaleyi silmek istediğinizden emin misiniz?')">Sil</a>
+
+        <div class="featured-posts">
+            {% for article in featured_articles %}
+            <div class="post-item p-3 rounded-3 mb-3 {% if not loop.last %}border-bottom{% endif %}">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="post-content">
+                        {% if session["logged_in"] %}
+                        <a href="{{ url_for('article', article_id=article.id) }}" class="text-decoration-none">
+                            <h6 class="mb-1 text-dark">{{ article.title }}</h6>
+                            <small class="text-muted d-block">
+                                <i class="bi bi-calendar3 me-1"></i>
+                                {{ article.created_date.strftime('%d %b %Y') }}
+                            </small>
+                        </a>
+                        {% else %}
+                        <a href="{{ url_for('login', next=url_for('article', article_id=article.id)) }}" class="text-decoration-none">
+                            <h6 class="mb-1 text-dark">{{ article.title }}</h6>
+                            <small class="text-muted d-block">
+                                <i class="bi bi-calendar3 me-1"></i>
+                                {{ article.created_date.strftime('%d %b %Y') }}
+                            </small>
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% if is_admin %}
+                    <div class="btn-group">
+                        <a href="{{ url_for('update', id=article.id) }}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="{{ url_for('delete', id=article.id) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bu makaleyi silmek istediğinizden emin misiniz?')">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
         </div>
-        {% endif %}
-      </div>
-    </li>
-    {% endfor %}
-  </ul>
+    </div>
 </div>
-{% endblock aside %}
 
-
-
-
-{% block asideTopics %}
-<div class="p-3 bg-white rounded shadow-sm">
-  <h5>🏷️ Popüler Konular</h5>
-  <div class="d-flex flex-wrap gap-2">
-    <span class="badge bg-primary">Web Development</span>
-    <span class="badge bg-primary">Python</span>
-    <span class="badge bg-primary">JavaScript</span>
-    <span class="badge bg-primary">AI/ML</span>
-    <span class="badge bg-primary">DevOps</span>
-    <span class="badge bg-primary">Career Tips</span>
-  </div>
+<!-- Popular Topics Card -->
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-4">
+        <h5 class="card-title mb-4 d-flex align-items-center">
+            <i class="bi bi-hash text-primary me-2"></i> Popüler Konular
+        </h5>
+        <div class="d-flex flex-wrap gap-2">
+            {% if session["logged_in"] %}
+            <a href="{{ url_for('articles') }}" class="badge bg-primary-subtle text-primary text-decoration-none p-2">Web Development</a>
+            <a href="{{ url_for('articles') }}" class="badge bg-primary-subtle text-primary text-decoration-none p-2">Python</a>
+            <a href="{{ url_for('articles') }}" class="badge bg-primary-subtle text-primary text-decoration-none p-2">JavaScript</a>
+            <a href="{{ url_for('articles') }}" class="badge bg-primary-subtle text-primary text-decoration-none p-2">AI/ML</a>
+            <a href="{{ url_for('articles') }}" class="badge bg-primary-subtle text-primary text-decoration-none p-2">DevOps</a>
+            <a href="{{ url_for('articles') }}" class="badge bg-primary-subtle text-primary text-decoration-none p-2">Career Tips</a> {% else %}
+            <a href="{{ url_for('login') }}" class="badge bg-primary-subtle text-primary text-decoration-none p-2">Web Development</a>
+            <a href="{{ url_for('login') }}" class="badge bg-primary-subtle text-primary text-decoration-none p-2">Python</a>
+            <a href="{{ url_for('login') }}" class="badge bg-primary-subtle text-primary text-decoration-none p-2">JavaScript</a>
+            <a href="{{ url_for('login') }}" class="badge bg-primary-subtle text-primary text-decoration-none p-2">AI/ML</a>
+            <a href="{{ url_for('login') }}" class="badge bg-primary-subtle text-primary text-decoration-none p-2">DevOps</a>
+            <a href="{{ url_for('login') }}" class="badge bg-primary-subtle text-primary text-decoration-none p-2">Career Tips</a> {% endif %}
+        </div>
+    </div>
 </div>
-{% endblock %}
+{% endblock aside %} {% block asideTopics %}{% endblock %}
 
 <!-- Aside Content End-->
+
+<style>
+    body {
+        background: #f4f6fa;
+    }
+    
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #1976d2 0%, #1a237e 100%);
+    }
+    
+    .card,
+    .alert,
+    .featured-posts,
+    .post-item {
+        background: #fff !important;
+        border-radius: 1.25rem !important;
+        box-shadow: 0 2px 16px 0 rgba(26, 35, 126, 0.07);
+    }
+    
+    .card-title,
+    .display-4,
+    .h4,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        color: #1a237e !important;
+    }
+    
+    .btn-primary,
+    .bg-primary,
+    .badge.bg-primary {
+        background-color: #1976d2 !important;
+        border-color: #1976d2 !important;
+    }
+    
+    .btn-primary:hover,
+    .bg-primary:hover {
+        background-color: #1565c0 !important;
+        border-color: #1565c0 !important;
+    }
+    
+    .btn-outline-primary {
+        color: #1976d2 !important;
+        border-color: #1976d2 !important;
+    }
+    
+    .btn-outline-primary:hover {
+        background-color: #1976d2 !important;
+        color: #fff !important;
+    }
+    
+    .bg-primary-subtle {
+        background-color: #e3f2fd !important;
+        color: #1976d2 !important;
+    }
+    
+    .badge.bg-primary-subtle.text-primary {
+        background-color: #e3f2fd !important;
+        color: #1976d2 !important;
+    }
+    
+    .badge.bg-success-subtle {
+        background-color: #e8f5e9 !important;
+        color: #388e3c !important;
+    }
+    
+    .badge.bg-warning-subtle {
+        background-color: #fff8e1 !important;
+        color: #ff9800 !important;
+    }
+    
+    .badge.bg-info-subtle {
+        background-color: #e1f5fe !important;
+        color: #0288d1 !important;
+    }
+    /* Orange highlight for icons */
+    
+    .bi-stars,
+    .bi-bookmark-star-fill {
+        color: #ff9800 !important;
+    }
+    /* Section backgrounds */
+    
+    .alert-info {
+        background: #e3f2fd !important;
+        color: #1976d2 !important;
+        border: none;
+    }
+    
+    .alert-success {
+        background: #fff8e1 !important;
+        color: #ff9800 !important;
+        border: none;
+    }
+    /* Hover effects */
+    
+    .hover-shadow {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .hover-shadow:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 32px 0 rgba(26, 35, 126, 0.12) !important;
+    }
+    
+    .post-item {
+        transition: background-color 0.2s;
+    }
+    
+    .post-item:hover {
+        background-color: #e3f2fd !important;
+    }
+    
+    .btn-group .btn {
+        padding: 0.25rem 0.5rem;
+    }
+    
+    .featured-posts .post-item:last-child {
+        margin-bottom: 0 !important;
+        border-bottom: none !important;
+    }
+    /* Footer and navbar styling for consistency */
+    
+    footer,
+    .navbar {
+        background: linear-gradient(90deg, #1976d2 0%, #1a237e 100%) !important;
+        color: #fff !important;
+    }
+    
+    footer a,
+    .navbar a {
+        color: #fff !important;
+    }
+    
+    footer a:hover,
+    .navbar a:hover {
+        color: #ff9800 !important;
+    }
+    
+    .bg-gradient-hero {
+        background: linear-gradient(135deg, #143a63 0%, #1976d2 100%);
+    }
+    
+    .bg-gradient-hero h1,
+    .bg-gradient-hero h2,
+    .bg-gradient-hero p,
+    .bg-gradient-hero .lead {
+        text-shadow: 0 2px 8px rgba(20, 58, 99, 0.25), 0 1px 0 #000;
+        color: #fff !important;
+    }
+    
+    .bg-gradient-hero .btn {
+        box-shadow: 0 2px 8px rgba(20, 58, 99, 0.10);
+    }
+    
+    .bg-gradient-hero img {
+        box-shadow: 0 0 0 6px rgba(25, 118, 210, 0.15), 0 4px 24px 0 rgba(20, 58, 99, 0.18);
+    }
+    
+    @media (max-width: 991.98px) {
+        .bg-gradient-hero {
+            padding: 2rem 1rem !important;
+        }
+        .display-4 {
+            font-size: 2.2rem;
+        }
+        .lead {
+            font-size: 1.05rem;
+        }
+    }
+    
+    @media (max-width: 575.98px) {
+        .bg-gradient-hero {
+            padding: 1.2rem 0.5rem !important;
+        }
+        .display-4 {
+            font-size: 1.5rem;
+        }
+        .lead {
+            font-size: 0.98rem;
+        }
+        .rounded-4 {
+            border-radius: 1rem !important;
+        }
+    }
+</style>

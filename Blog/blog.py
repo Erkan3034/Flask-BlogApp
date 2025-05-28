@@ -6,6 +6,7 @@ from passlib.hash import sha256_crypt # passlib kütüphanesi ile şifreleme iş
 import os # Ortam değişkenlerini kullanmak için os kütüphanesini kullanıyoruz.
 import time # Zaman işlemleri için time kütüphanesini kullanıyoruz.
 import email_validator # email_validator kütüphanesi ile email doğrulama işlemi yapacağız.
+import secrets # Güvenli rastgele değerler için secrets modülü
 
 from dotenv import load_dotenv
 
@@ -38,26 +39,23 @@ class RegisterForm(Form):
 
 app = Flask(__name__)
 
-
-# Secret key from environment variables
-app.secret_key = os.getenv('SECRET_KEY')
+# Güvenli rastgele secret key oluştur
+app.secret_key = secrets.token_hex(16)  # 32 karakterlik güvenli rastgele değer
 
 #====================DB baglantı islemleri ===============================================================================================
 #==================== DB bağlantı ayarları ====================
 load_dotenv()  # .env dosyasını oku
 
-app.config['MYSQL_HOST'] = os.getenv('MYSQL_HOST')
-app.config['MYSQL_USER'] = os.getenv('MYSQL_USER')
-app.config['MYSQL_PASSWORD'] = os.getenv('MYSQL_PASSWORD')
-app.config['MYSQL_DB'] = os.getenv('MYSQL_DB')
+# Local MySQL veritabanı ayarları
+app.config['MYSQL_HOST'] = 'localhost'  # Local MySQL sunucusu
+app.config['MYSQL_USER'] = 'root'       # Varsayılan MySQL kullanıcı adı
+app.config['MYSQL_PASSWORD'] = 'Erkan1205/*-+'       # MySQL şifresi
+app.config['MYSQL_DB'] = 'coder_erkan_blog'       # Veritabanı adı
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
-app.config['MYSQL_PORT'] = int(os.getenv('MYSQL_PORT', 3306))
-app.config['MYSQL_CONNECT_TIMEOUT'] = 10
-# FreeSQLDatabase için basitleştirilmiş SSL ayarları
-app.config['MYSQL_SSL_MODE'] = 'DISABLED'  # SSL'i devre dışı bırak
+app.config['MYSQL_SSL_MODE'] = 'DISABLED'  # Local geliştirme için SSL devre dışı
 
 mysql = MySQL(app) # MySQL veritabanına bağlanmak için mysql nesnesi oluşturuyoruz.
-
+print("MySQL bağlantısı başarılı!")
 # Test database connection with better error handling
 try:
     with app.app_context():
