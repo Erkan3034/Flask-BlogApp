@@ -49,7 +49,7 @@ load_dotenv()  # .env dosyasını oku
 # Local MySQL veritabanı ayarları
 app.config['MYSQL_HOST'] = 'localhost'  # Local MySQL sunucusu
 app.config['MYSQL_USER'] = 'root'       # Varsayılan MySQL kullanıcı adı
-app.config['MYSQL_PASSWORD'] = 'Erkan1205/*-+'       # MySQL şifresi
+app.config['MYSQL_PASSWORD'] = 'password'       # MySQL şifresi
 app.config['MYSQL_DB'] = 'coder_erkan_blog'       # Veritabanı adı
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 app.config['MYSQL_SSL_MODE'] = 'DISABLED'  # Local geliştirme için SSL devre dışı
