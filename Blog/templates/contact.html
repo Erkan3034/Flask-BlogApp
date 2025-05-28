@@ -204,90 +204,92 @@
                     <i class="bi bi-instagram card-icon"></i>
                     <h5 class="card-title">Instagram</h5>
                     <p class="card-text">Hayatımın anlarını keşfet!</p>
-                    <a href="https://instagram.com/coderr.zone target=" _blank " class="card-link ">Instagram'da Gör</a>
+                    <a href="https://instagram.com/codenthia target=" _blank " class="card-link ">Instagram'da Gör</a>
         </div>
       </div>
     </div>
 
     <!-- İletişim Formu -->
-    <div class="contact-form-container ">
-      <h3 class="contact-title ">Bana Ulaşın</h3>
-      <form id="contactForm " novalidate>
-        <div class="mb-3 ">
-          <label for="name " class="form-label ">Adınız</label>
-          <input type="text " class="form-control " id="name " name="name " placeholder="Adınızı girin " required>
-        </div>
-        <div class="mb-3 ">
-          <label for="email " class="form-label ">E-posta Adresiniz</label>
-          <input type="email " class="form-control " id="email " name="email " placeholder="ornek@eposta.com " required>
-        </div>
-        <div class="mb-3 ">
-          <label for="message " class="form-label ">Mesajınız</label>
-          <textarea class="form-control " id="message " name="message " rows="5 " placeholder="Mesajınızı yazın " required></textarea>
-        </div>
-        <button type="submit " class="btn btn-submit ">Gönder</button>
-      </form>
-      <div id="formResponse "></div>
+<div class="contact-form-container">
+  <h3 class="contact-title">Bana Ulaşın</h3>
+  <form id="contactForm" novalidate>
+    <div class="mb-3">
+      <label for="name" class="form-label">Adınız</label>
+      <input type="text" class="form-control" id="name" name="name" placeholder="Adınızı girin" required>
     </div>
+    <div class="mb-3">
+      <label for="email" class="form-label">E-posta Adresiniz</label>
+      <input type="email" class="form-control" id="email" name="email" placeholder="ornek@eposta.com" required>
+    </div>
+    <div class="mb-3">
+      <label for="message" class="form-label">Mesajınız</label>
+      <textarea class="form-control" id="message" name="message" rows="5" placeholder="Mesajınızı yazın" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-submit">Gönder</button>
+  </form>
+  <div id="formResponse"></div>
+</div>
   </div>
 </section>
 
 <script>
-document.getElementById('contactForm').addEventListener('submit', function(event) {
-  event.preventDefault();
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('contactForm').addEventListener('submit', function(event) {
+    event.preventDefault();
 
-  // Form verilerini al
-  const name = DOMPurify.sanitize(document.getElementById('name').value.trim());
-  const email = DOMPurify.sanitize(document.getElementById('email').value.trim());
-  const message = DOMPurify.sanitize(document.getElementById('message').value.trim());
+    // Form verilerini al
+    const name = DOMPurify.sanitize(document.getElementById('name').value.trim());
+    const email = DOMPurify.sanitize(document.getElementById('email').value.trim());
+    const message = DOMPurify.sanitize(document.getElementById('message').value.trim());
 
-  // Temel doğrulama
-  if (!name || !email || !message) {
-    showResponse('Lütfen tüm alanları doldurun.', 'danger');
-    return;
-  }
-
-  // E-posta format kontrolü
-  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailPattern.test(email)) {
-    showResponse('Geçerli bir e-posta adresi girin.', 'danger');
-    return;
-  }
-
-  // Formspree API'sine gönder
-  const formData = new FormData();
-  formData.append('name', name);
-  formData.append('email', email);
-  formData.append('message', message);
-
-  fetch('https://formspree.io/f/mbloybdv', { // Buradaki {your-form-id}'yi Formspree'den aldığınız ID ile değiştirin
-    method: 'POST',
-    body: formData,
-    headers: {
-      'Accept': 'application/json'
+    // Temel doğrulama
+    if (!name || !email || !message) {
+      showResponse('Lütfen tüm alanları doldurun.', 'danger');
+      return;
     }
-  })
-  .then(response => {
-    if (response.ok) {
-      showResponse('Mesajınız başarıyla gönderildi!', 'success');
-      document.getElementById('contactForm').reset();
-    } else {
-      throw new Error('Mesaj gönderilirken bir hata oluştu.');
+
+    // E-posta format kontrolü
+    const emailPattern = /^[^\s@]+@[^\s@]+\.com$/;
+    if (!emailPattern.test(email)) {
+      showResponse('Lütfen .com uzantılı geçerli bir e-posta adresi girin.', 'danger');
+      return;
     }
-  })
-  .catch(error => {
-    showResponse(error.message, 'danger');
+
+    // Formspree API'sine gönder
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('email', email);
+    formData.append('message', message);
+
+    fetch('https://formspree.io/f/mbloybdv', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Accept': 'application/json'
+      }
+    })
+    .then(response => {
+      if (response.ok) {
+        showResponse('Mesajınız başarıyla gönderildi!', 'success');
+        document.getElementById('contactForm').reset();
+      } else {
+        throw new Error('Mesaj gönderilirken bir hata oluştu.');
+      }
+    })
+    .catch(error => {
+      showResponse(error.message, 'danger');
+    });
   });
-});
 
-function showResponse(message, type) {
-  const responseDiv = document.getElementById('formResponse');
-  responseDiv.innerHTML = `
-    <div class="alert alert-${type} " role="alert ">
-      ${message}
-    </div>
-  `;
-  setTimeout(() => responseDiv.innerHTML = '', 5000);
-}
+  function showResponse(message, type) {
+    const responseDiv = document.getElementById('formResponse');
+    responseDiv.innerHTML = `
+      <div class="alert alert-${type} " role="alert ">
+        ${message}
+      </div>
+    `;
+    setTimeout(() => responseDiv.innerHTML = '', 5000);
+  }
+});
 </script>
 {% endblock contact %}
