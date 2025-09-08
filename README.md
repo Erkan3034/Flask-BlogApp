@@ -2,8 +2,35 @@
 
 Bu proje, Flask framework'ü kullanılarak geliştirilmiş modern bir kişisel blog sitesidir. Full Stack web geliştirme, AI/ML projeleri ve teknoloji yazıları paylaşmak amacıyla tasarlanmıştır.
 
+## 📸 Ekran Görüntüleri
+
+### 🏠 Ana Sayfa
+![Ana Sayfa](Blog/assets/img/anasayfa.png)
+*Modern ve responsive tasarım ile kişisel profil, tech stack ve öne çıkan makaleler*
+
+### 👤 Kullanıcı Dashboard'u
+![Dashboard](Blog/assets/img/dashboard.png)
+*Kullanıcıların kendi makalelerini yönetebileceği dashboard paneli*
+
+### 🔐 Giriş Sayfası
+![Giriş](Blog/assets/img/login.png)
+*Güvenli kullanıcı giriş sistemi*
+
+### ℹ️ Hakkımda Sayfası
+![Hakkımda](Blog/assets/img/hakkimda.png)
+*Kişisel bilgiler ve iletişim detayları*
+
+### ✅ Admin Onay Sistemi
+![Admin Onay](Blog/assets/img/onay.png)
+*Admin kullanıcıların makale onaylama paneli*
+
+### 🔗 Sosyal Medya Entegrasyonu
+![Takip Et](Blog/assets/img/follow.png)
+*GitHub ve LinkedIn bağlantıları ile sosyal medya entegrasyonu*
+
 ## 📋 İçindekiler
 
+- [Ekran Görüntüleri](#-ekran-görüntüleri)
 - [Özellikler](#-özellikler)
 - [Teknoloji Yığını](#-teknoloji-yığını)
 - [Kurulum](#-kurulum)
