@@ -1,6 +1,7 @@
 from functools import wraps
 from flask import Flask , render_template, flash, redirect,session, url_for, logging,request
-from flask_mysqldb import MySQL # MySQL veritabanı ile bağlantı kurmak için flask_mysqldb kütüphanesini kullanıyoruz.
+import MySQLdb # MySQL veritabanı ile bağlantı kurmak için MySQLdb kütüphanesini kullanıyoruz.
+import MySQLdb.cursors # DictCursor için
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators # wtforms kütüphanesi ile form işlemleri yapacağız.
 from passlib.hash import sha256_crypt # passlib kütüphanesi ile şifreleme işlemi yapacağız.
 import os # Ortam değişkenlerini kullanmak için os kütüphanesini kullanıyoruz.
@@ -46,37 +47,39 @@ app.secret_key = secrets.token_hex(16)  # 32 karakterlik güvenli rastgele değe
 #==================== DB bağlantı ayarları ====================
 load_dotenv()  # .env dosyasını oku
 
-# Local MySQL veritabanı ayarları
-app.config['MYSQL_HOST'] = 'localhost'  # Local MySQL sunucusu
-app.config['MYSQL_USER'] = 'root'       # Varsayılan MySQL kullanıcı adı
-app.config['MYSQL_PASSWORD'] = 'password'       # MySQL şifresi
-app.config['MYSQL_DB'] = 'coder_erkan_blog'       # Veritabanı adı
+# Local MySQL veritabanı ayarları - Environment variables varsa onları kullan, yoksa local değerleri
+app.config['MYSQL_HOST'] = os.environ.get('MYSQL_HOST', 'localhost')
+app.config['MYSQL_USER'] = os.environ.get('MYSQL_USER', 'admin')
+app.config['MYSQL_PASSWORD'] = os.environ.get('MYSQL_PASSWORD', 'Erkan1205/*-+')
+app.config['MYSQL_DB'] = os.environ.get('MYSQL_DB', 'coder_erkan_blog')
+app.config['MYSQL_PORT'] = int(os.environ.get('MYSQL_PORT', 3307))
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 app.config['MYSQL_SSL_MODE'] = 'DISABLED'  # Local geliştirme için SSL devre dışı
 
-mysql = MySQL(app) # MySQL veritabanına bağlanmak için mysql nesnesi oluşturuyoruz.
-print("MySQL bağlantısı başarılı!")
-# Test database connection with better error handling
+# MySQL bağlantı fonksiyonu
+def get_db_connection():
+    """MySQL veritabanına bağlantı kur"""
+    return MySQLdb.connect(
+        host=app.config['MYSQL_HOST'],
+        user=app.config['MYSQL_USER'],
+        passwd=app.config['MYSQL_PASSWORD'],
+        db=app.config['MYSQL_DB'],
+        port=app.config['MYSQL_PORT']
+    )
+
+# Test database connection
 try:
-    with app.app_context():
-        # Önce bağlantı bilgilerini kontrol et
-        if not all([app.config['MYSQL_HOST'], app.config['MYSQL_USER'], app.config['MYSQL_PASSWORD'], app.config['MYSQL_DB']]):
-            missing = []
-            if not app.config['MYSQL_HOST']: missing.append('MYSQL_HOST')
-            if not app.config['MYSQL_USER']: missing.append('MYSQL_USER')
-            if not app.config['MYSQL_PASSWORD']: missing.append('MYSQL_PASSWORD')
-            if not app.config['MYSQL_DB']: missing.append('MYSQL_DB')
-            raise ValueError(f"Missing required environment variables: {', '.join(missing)}")
-            
-        print("Attempting to connect to database...")
-        print(f"Connection details: HOST={app.config['MYSQL_HOST']}, DB={app.config['MYSQL_DB']}, USER={app.config['MYSQL_USER']}, PORT={app.config['MYSQL_PORT']}")
-        
-        cursor = mysql.connection.cursor()
-        cursor.execute('SELECT 1')
-        print("Database connection successful!")
-        cursor.close()
+    print("Attempting to connect to database...")
+    print(f"Connection details: HOST={app.config['MYSQL_HOST']}, DB={app.config['MYSQL_DB']}, USER={app.config['MYSQL_USER']}, PORT={app.config['MYSQL_PORT']}")
+    
+    test_conn = get_db_connection()
+    cursor = test_conn.cursor()
+    cursor.execute('SELECT 1')
+    print("✅ Database connection successful!")
+    cursor.close()
+    test_conn.close()
 except Exception as e:
-    print("Database connection failed!")
+    print("❌ Database connection failed!")
     print(f"Error: {str(e)}")
     print("Please check if:")
     print("1. All environment variables are set correctly")
@@ -90,25 +93,42 @@ except Exception as e:
 
 @app.route("/")
 def index():
-    cursor = mysql.connection.cursor()
-    cursor.execute("SELECT * FROM articles WHERE is_approved = TRUE ORDER BY created_date DESC LIMIT 3")
-    featured_articles = cursor.fetchall()
-    is_admin = False
-    if "logged_in" in session:
-        cursor.execute("SELECT is_admin FROM users WHERE username = %s", (session["username"],))
-        user = cursor.fetchone()
-        is_admin = user['is_admin'] if user else False
-    cursor.close()
-    if "logged_in" in session:
+    try:
+        print("Ana sayfa yükleniyor...")
+        connection = get_db_connection()
+        print("Veritabanı bağlantısı kuruldu")
+        cursor = connection.cursor(MySQLdb.cursors.DictCursor)
+        print("Cursor oluşturuldu")
+        cursor.execute("SELECT * FROM articles WHERE is_approved = 1 ORDER BY created_date DESC LIMIT 3")
+        featured_articles = cursor.fetchall()
+        print(f"Makaleler alındı: {len(featured_articles)} adet")
+        is_admin = False
+        
+        if "logged_in" in session:
+            cursor.execute("SELECT is_admin FROM users WHERE username = %s", (session["username"],))
+            user = cursor.fetchone()
+            is_admin = user['is_admin'] if user else False
+            username = session["username"]
+            print(f"Giriş yapan kullanıcı: {username}, Admin: {is_admin}")
+        else:
+            username = "Misafir"
+            print("Misafir kullanıcı")
+            
+        cursor.close()
+        connection.close()
+        print("Veritabanı bağlantısı kapatıldı")
+        
+        print("Template render ediliyor...")
         return render_template("index.html", 
-                             username=session["username"],
+                             username=username,
                              featured_articles=featured_articles,
                              is_admin=is_admin)
-    else:
-        return render_template("index.html",
-                             username="Misafir",
-                             featured_articles=featured_articles,
-                             is_admin=False)
+    except Exception as e:
+        print(f"❌ Ana sayfa hatası: {e}")
+        import traceback
+        traceback.print_exc()
+        # Basit HTML döndür
+        return f"<h1>Hata: {str(e)}</h1>"
 
 #====================About Islemleri===============================================================================================
 @app.route("/about")
@@ -444,4 +464,4 @@ def admin_panel():
 port = int(os.environ.get("PORT", 5000))
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
